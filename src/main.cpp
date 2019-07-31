@@ -1,10 +1,18 @@
+#include <Arduino.h>
 #include <NERF_Optics.h>
+#include <NERF_Display.h>
 
-NERF_Optics Optics;
+NERF_Optics optics;
+NERF_Display oled;
 
 void setup() {
+
 	// put your setup code here, to run once:
-	Optics.setupOptics();
+	Serial.begin(115200);
+
+	optics.setupOptics();
+	oled.setupDisplay();
+	
 }
 
 void loop() {

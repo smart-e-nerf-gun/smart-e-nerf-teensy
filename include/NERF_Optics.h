@@ -1,6 +1,9 @@
 #pragma once
 
-#include <Includes.h>
+#include <Arduino.h>
+
+#define OPTIC_SENSOR_1_PIN  14
+#define OPTIC_SENSOR_2_PIN  15
 
 class NERF_Optics {
 
