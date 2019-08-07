@@ -61,14 +61,16 @@ void NERF_Optics::toggleLED_2() {
  */
 void NERF_Optics::setupOptics() {
 
-    pinMode(OPTIC_SENSOR_1_PIN, INPUT_PULLUP);    // Configure the inputs with internal pullups
-    pinMode(OPTIC_SENSOR_2_PIN, INPUT_PULLUP);
-    
     read_first_sensor = false;          // Default, ready to read the first sensor first
 
-    // Configure the ISR handlers
-    attachInterrupt(digitalPinToInterrupt(OPTIC_SENSOR_1_PIN), toggleLED_1, FALLING);
-    attachInterrupt(digitalPinToInterrupt(OPTIC_SENSOR_2_PIN), toggleLED_2, FALLING);
+    // These are probably not the right set-up, need to configure this.
+    // We need to check the threshold voltage (and it's corresponding value)
+    
+    analogComparator.setOn(OPTIC_SENSOR_1_PIN, 0);
+    analogComparator.setOn(OPTIC_SENSOR_2_PIN, 0);
+
+    analogComparator.enableInterrupt(toggleLED_1, FALLING); //we set the interrupt and when it has to be raised    
+    analogComparator.enableInterrupt(toggleLED_2, FALLING); //we set the interrupt and when it has to be raised
 
     return;
 
