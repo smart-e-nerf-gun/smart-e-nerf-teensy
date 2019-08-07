@@ -4,10 +4,20 @@
 NERF_Optics optics;
 NERF_Display oled;
 
-enum state {INITIAL = 0, AUTHORISATION, TRANSMIT, DISPLAY_DATA, SLEEP};
+enum state {
+	UNAUTHORISED,
+	TRANSMIT_USER_DETAILS,
+	READY,
+	ACTIVE,
+	READ,
+	TRANSMIT,
+	UPDATE_DISPLAY,
+	SLEEP
+};
 
-state currentState = INITIAL;
-state nextState = INITIAL;
+state currentState = UNAUTHORISED;
+state nextState = UNAUTHORISED;
+
 void setup() {
 
 	// put your setup code here, to run once:
@@ -27,23 +37,34 @@ void loop() {
 
 	switch (currentState) {
 		
-		case INITIAL:
-			
+		case UNAUTHORISED:
+
+			/*
+			 *  Scan RFID reader here and check if an authorised user has scanned on.
+			 *  Stay in unauthorised or move to nextstate if successful.
+			 *  Transmit to sever to check if the card used is a valid one.
+			*/
+		
+			break;
+
+		case TRANSMIT_USER_DETAILS:
+
 
 			break;
 
-		case AUTHORISATION:
-			
+		case READY:
+
+			break;
+
+		case READ:
 
 			break;
 
 		case TRANSMIT:
 
-
 			break;
 
-		case DISPLAY_DATA:
-
+		case UPDATE_DISPLAY:
 
 			break;
 
@@ -53,7 +74,7 @@ void loop() {
 
 		default:
 
-			currentState = INITIAL;
+			currentState = nextState;
 			
 			break;
 	}
