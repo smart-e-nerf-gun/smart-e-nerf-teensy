@@ -14,6 +14,9 @@ class NERF_GPS {
 //Location
 class NERF_Location{
     friend class TinyGPSLocation;
+    private:
+
+    public:
 
 };
 
