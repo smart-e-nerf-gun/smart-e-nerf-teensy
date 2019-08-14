@@ -21,18 +21,23 @@ class NERF_Location{
 };
 
 //Time and Date Class
-class NERF_TimeDate{
-    friend class TinyGPSTime;
-    friend class TinyGPSDate;
+class NERF_TimeDate : public TinyGPSDate, public TinyGPSTime {
     private:
         //Leave this empty for now
     public:
-        double getDate(){ //For getting the date (optional)
-            uint32_t value();
-            uint16_t year();
-            uint8_t month();
-            uint8_t day();   
+        struct dateFormat{ //For passing back to Dashboard
+            uint16_t int1; //This will follow the DD/MM/YYYY format
+            uint16_t int2;
+            uint16_t int3;
+        };
 
+        uint16_t getDate(){ //For getting the date (optional)            
+            uint16_t curr_year = year();
+            uint16_t curr_month = month();
+            uint16_t curr_day = day();
+
+            dateFormat current_date = {curr_day, curr_month, curr_year};
+            return current_date;
         }
         
 };
