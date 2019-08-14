@@ -37,7 +37,7 @@ class NERF_TimeDate : public TinyGPSDate, public TinyGPSTime {
             uint16_t curr_day = day();
 
             dateFormat current_date = {curr_day, curr_month, curr_year};
-            return current_date;
+            return curr_day;
         }
         
 };
