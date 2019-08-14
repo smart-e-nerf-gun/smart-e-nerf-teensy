@@ -8,5 +8,7 @@ class NERF_RFID: public MFRC522 {
     private:
 
     public:
+        void rfidSetup();
+        void rfidLoop();
 
 };
