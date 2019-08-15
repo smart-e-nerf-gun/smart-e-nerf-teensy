@@ -15,5 +15,6 @@ class NERF_Optics {
         static void toggleLED_1();
         static void toggleLED_2();
         static void setupOptics();
+        static void setupComparator();
 
 };

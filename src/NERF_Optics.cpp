@@ -1,5 +1,6 @@
 #include "NERF_Optics.h"
 
+
 /**
  * Flag that indicates is the bulet has passed the first optical sensor.
  * This should be reset, when it passes the second optical sensor.
@@ -72,4 +73,31 @@ void NERF_Optics::setupOptics() {
 
     return;
 
+}
+
+/* Setting up the internal comparator */
+
+void NERF_Optics::setupComparator() {
+
+CMP0_CR0 = 0b00000000; //cmp control starts at zero
+CMP0_CR1 = 0b00010001; // sets up the cmp for high speed
+CMP0_FPR = 0b00000000; //filter disabled
+CMP0_SCR = 0b00001000; // sets a falling edge for output state
+CMP0_MUXCR = 0b00000001; // sets + input as IN0 & - input as IN1
+/* IN0 is set to pin 11 & IN1 is set to pin 12 on Teensy*/
+CMP0_DACCR = 0b00000000; // No DAC
+}
+void loop () {
+{
+    if (CMP0_SCR < 8) // if falling edge triggers
+        {
+        Serial.print("Cmp triggered"); 
+        }
+    else
+        {
+            // not triggered 
+            Serial.print("Cmp not triggered");
+        }
+} 
+return;
 }
