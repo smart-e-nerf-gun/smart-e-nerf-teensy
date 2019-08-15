@@ -1,8 +1,10 @@
 #include <NERF_Optics.h>
 #include <NERF_Display.h>
+#include <NERF_RFID.h>
 
 NERF_Optics optics;
 NERF_Display oled;
+NERF_RFID rfid;
 
 enum state {
 	UNAUTHORISED,
@@ -26,9 +28,11 @@ void setup() {
 	optics.setupOptics();
 	oled.setupDisplay();
 	
+
 }
 
 void loop() {
+	
 	// put your main code here, to run repeatedly:
 
 	// State machine shall be implemented here.
