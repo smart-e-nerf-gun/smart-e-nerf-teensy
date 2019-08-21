@@ -76,9 +76,5 @@ class NERF_TimeDate : public TinyGPSDate, public TinyGPSTime {
             format.mm = minute(); 
             return format;
         }
-
-
-
-
         
 };
