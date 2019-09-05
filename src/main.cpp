@@ -1,10 +1,7 @@
-#include <NERF_Optics.h>
-#include <NERF_Display.h>
-#include <NERF_RFID.h>
+#include <Arduino.h>
+#include <NERF_XBee.h>
 
-NERF_Optics optics;
-NERF_Display oled;
-NERF_RFID rfid;
+static NERF_XBee nerf_xbee;
 
 enum state {
 	UNAUTHORISED,
@@ -18,29 +15,24 @@ enum state {
 };
 
 state currentState = UNAUTHORISED;
-state nextState = UNAUTHORISED;
+state nextState = TRANSMIT_USER_DETAILS;
 
 void setup() {
 
 	// put your setup code here, to run once:
 	Serial.begin(115200);
-
-	optics.setupOptics();
-	oled.setupDisplay();
-	
-
+	nerf_xbee.setUpXbee();
 }
 
 void loop() {
-	
 	// put your main code here, to run repeatedly:
 
 	// State machine shall be implemented here.
 	// The behaviour for each state and the next state logic shall be implemented here.
-	// States be be defined as enums in 
+	// States be be defined as enums in
 
 	switch (currentState) {
-		
+
 		case UNAUTHORISED:
 
 			/*
@@ -48,14 +40,16 @@ void loop() {
 			 *  Stay in unauthorised or move to nextstate if successful.
 			 *  Transmit to sever to check if the card used is a valid one.
 			*/
+
+			break;
+
+		case TRANSMIT_USER_DETAILS: {
+			
+			uint8_t payloafs[] = "Hello!";
+			nerf_xbee.sendPayload(payloafs, sizeof(payloafs));
+
+		} break;
 		
-			break;
-
-		case TRANSMIT_USER_DETAILS:
-
-
-			break;
-
 		case READY:
 
 			break;
@@ -79,10 +73,9 @@ void loop() {
 		default:
 
 			currentState = nextState;
-			
+
 			break;
 	}
 
 	currentState = nextState;
-	
 }
