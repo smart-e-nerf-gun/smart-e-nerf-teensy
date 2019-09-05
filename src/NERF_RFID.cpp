@@ -38,15 +38,13 @@ void NERF_RFID::rfidRead()
 		//prints space between hex blocks for readability, this is not required for funtionality
 		//if UID is less than 0x10 add a space then a zero to maintain 2 hex digits format with spacing between hex blocks
 		//Serial.print(uid.uidByte[i] < 0x10 ? " 0" : " ");
-		//Serial.print(uid.uidByte[i], HEX); //prints the UID in HEX format
-		//Serial.print(uid.uidByte[i]);
-
+		Serial.print(uid.uidByte[i], HEX); //prints the UID in HEX format
+		
 		//concatonate to content the UID with two hex digit format with spacing between blocks
 		//content.concat(String(uid.uidByte[i] < 0x10 ? " 0" : " "));
-		//content.concat(String(uid.uidByte[i], HEX));
-		content.concat(String(uid.uidByte[i]));
+		content.concat(String(uid.uidByte[i], HEX));
 		uidRead[i] = uid.uidByte[i];
-		Serial.print(uidRead[i]); Serial.print(' ');
+		//Serial.print(uidRead[i]); Serial.print(' ');
 	}
 	Serial.println();			//println= new line (adds new line between "UID tag:" and "Message:")
 	Serial.print("Message : "); //print= display "message" but without new line
