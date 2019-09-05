@@ -1,7 +1,8 @@
 #include <Arduino.h>
 #include <NERF_XBee.h>
+#include <NERF_RFID.h>
 
-static NERF_XBee nerf_xbee;
+static NERF_RFID nerf_rfid;
 
 enum state {
 	UNAUTHORISED,
@@ -15,16 +16,24 @@ enum state {
 };
 
 state currentState = UNAUTHORISED;
-state nextState = TRANSMIT_USER_DETAILS;
+state nextState = UNAUTHORISED;
 
 void setup() {
-
-	// put your setup code here, to run once:
+	
+	
 	Serial.begin(115200);
+	delay(2000);
+	Serial.println("In setup");
+
 	nerf_xbee.setUpXbee();
+	nerf_rfid.rfidSetup();
+
 }
 
 void loop() {
+
+	
+
 	// put your main code here, to run repeatedly:
 
 	// State machine shall be implemented here.
@@ -33,7 +42,14 @@ void loop() {
 
 	switch (currentState) {
 
-		case UNAUTHORISED:
+		case UNAUTHORISED: {
+
+			Serial.println("In un-auth state");
+
+			// uint8_t test_payload[] = "In un-auth state";
+			// nerf_xbee.sendPayload(test_payload, sizeof(test_payload));
+
+			nerf_rfid.authenticateUser();
 
 			/*
 			 *  Scan RFID reader here and check if an authorised user has scanned on.
@@ -41,12 +57,11 @@ void loop() {
 			 *  Transmit to sever to check if the card used is a valid one.
 			*/
 
-			break;
+		} break;
 
 		case TRANSMIT_USER_DETAILS: {
 			
-			uint8_t payloafs[] = "Hello!";
-			nerf_xbee.sendPayload(payloafs, sizeof(payloafs));
+
 
 		} break;
 		
@@ -78,4 +93,6 @@ void loop() {
 	}
 
 	currentState = nextState;
+
+	delay(1000);
 }

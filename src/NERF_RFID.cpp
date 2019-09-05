@@ -1,77 +1,95 @@
 #include "NERF_RFID.h"
 
-void NERF_RFID::rfidSetup()
-{
+void NERF_RFID::rfidSetup() {
 	SPI.begin(); // Initiate  SPI bus
 	PCD_Init();  // Initiate MFRC522
 	Serial.println("Place your card near the reader");
 	Serial.println();
 }
 
-bool NERF_RFID::rfidAuthenticate()
-{
-	//send rfid read data to server and request authentication
-	//xbee is using serial3
-	return true; //just a fake return which simulate a return value from the server
+bool NERF_RFID::rfidAuthenticate(bool rfid_type) {
+
+	uint8_t payload[6];
+	payload[0] = 'R';			// Sending request
+	
+	if (rfid_type) {
+		payload[1] = 'M';		// Request mag
+	} else {
+		payload[1] = 'U';		// Request user
+	}
+
+	short offset = 2;
+
+	for(int i = offset; i < (4 + offset); i++) {
+		payload[i] = uidRead[i - offset];
+	}
+
+	for(int i=0; i < sizeof(payload); i++) {
+		Serial.print(payload[i]);
+		Serial.print(' ');
+	}
+	Serial.println();
+
+	nerf_xbee.sendPayload(payload, sizeof(payload));
+
+	return true;
+
 }
 
-void NERF_RFID::rfidRead()
-{
-
-	// Look for new cards
-	if (!PICC_IsNewCardPresent())
-	{
-		return;
-	}
-	// Select one of the cards
-	if (!PICC_ReadCardSerial())
-	{
-		return;
-	}
-	//Show UID on serial monitor
-	Serial.print("UID tag :");
-	String content = "";
-	// 	byte letter;
-
-	for (byte i = 0; i < uid.size; i++)
-	{
-		//prints space between hex blocks for readability, this is not required for funtionality
-		//if UID is less than 0x10 add a space then a zero to maintain 2 hex digits format with spacing between hex blocks
-		//Serial.print(uid.uidByte[i] < 0x10 ? " 0" : " ");
-		Serial.print(uid.uidByte[i], HEX); //prints the UID in HEX format
-		
-		//concatonate to content the UID with two hex digit format with spacing between blocks
-		//content.concat(String(uid.uidByte[i] < 0x10 ? " 0" : " "));
-		content.concat(String(uid.uidByte[i], HEX));
-		uidRead[i] = uid.uidByte[i];
-		//Serial.print(uidRead[i]); Serial.print(' ');
-	}
-	Serial.println();			//println= new line (adds new line between "UID tag:" and "Message:")
-	Serial.print("Message : "); //print= display "message" but without new line
-	content.toUpperCase();
+void NERF_RFID::rfidRead() {	// Read and saves uid from tag to uidRead.
 
 	
+	bool new_card_read = false;
 
-	//if (content.substring(1) == "B2 68 B5 73") //uncomment this if using UID format with spaces between blocks, index is 1 because there is a space at the start from formatting
-	//if (rfidAuthenticate()) //uncomment for final version, this will evaluate to true if UID is valid
-	if (content.substring(0) == "B268B573") //change here the UID of the card/cards that you want to give access to, index is 0 because there is no spaces at the start
-	{
-		Serial.println("Authorized access");
-		Serial.println();
-		delay(3000);
+	while (!new_card_read) {
+
+		if (PICC_IsNewCardPresent()) {
+			if (PICC_ReadCardSerial()) {
+				new_card_read = true;
+			}
+		}
 	}
-	else	
-	{
-		Serial.println(" Access denied");
-		delay(3000);
+
+
+	for (byte i = 0; i < uid.size; i++) {
+		//prints space between hex blocks for readability, this is not required for funtionality
+		//if UID is less than 0x10 add a space then a zero to maintain 2 hex digits format with spacing between hex blocks
+		uidRead[i] = uid.uidByte[i];
+	}
+
+	Serial.print("UID size: ");
+	Serial.println(uid.size);
+
+	Serial.print("Got uid: ");
+	
+	for (int i = 0 ; i < sizeof(uidRead); i++) {
+		Serial.print(uidRead[i]);
+		Serial.print(' ');
+	}
+	Serial.println();
+}
+
+void NERF_RFID::setCurrentUser() {
+}
+
+
+
+bool NERF_RFID::authenticateUser() {
+	rfidRead();
+	if (rfidAuthenticate(false) ) {		// false for user
+		return true;
+	} else {
+		return false;
 	}
 }
 
-void setCurrentUser()
-{
+bool NERF_RFID::authenticateMagazine() {
+
+	return true;
+	
 }
 
-uint8_t NERF_RFID::getCurrentUser()
-{
-	return current_user;
+
+char * NERF_RFID::getCurrentUser() {
+	return current_user_name;
 }

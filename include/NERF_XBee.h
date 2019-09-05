@@ -22,3 +22,5 @@ class NERF_XBee {
 	void setUpXbee();
 	void sendPayload(uint8_t *value, uint8_t len);
 };
+
+static NERF_XBee nerf_xbee;

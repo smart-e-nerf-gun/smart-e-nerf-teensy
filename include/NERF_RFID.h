@@ -3,36 +3,33 @@
 #include <Arduino.h>
 #include <MFRC522.h>
 #include <SPI.h>
+#include <NERF_XBee.h>
 
 #define SS_PIN 10
 #define RST_PIN 9
-
-/*struct rfidInfo_struct
-{
-    uint8_t uidRead[10]; //UID to send to server
-    bool authorized; //0 is unauthorize, 1 is authorized
-    bool tagType; //0 for user tag, 1 for magazine tag
-
-};*/
 
 class NERF_RFID: public MFRC522 {
 
     private:
 
-        uint8_t current_user;
-        uint8_t current_magazine;
-        //rfidInfo_struct rfidInfo;
-        uint8_t uidRead[10]; //UID to send to server
-        bool authorized; //0 is unauthorize, 1 is authorized
-        bool tagType; //0 for user tag, 1 for magazine tag
+        uint8_t current_uid[10];
+        char * current_user_name;
+        uint8_t current_magazine[10];
+        
+        
+        uint8_t uidRead[4]; // Temp uid store when reading tag
+        bool authorized;     // Temp bool to check server response
+        bool tagType;        // 0 for user tag, 1 for magazine tag
 
     public:
-        void rfidSetup(); //use to setup RFID
-        bool rfidAuthenticate();
+        void rfidSetup();           //use to setup RFID
+        bool rfidAuthenticate(bool rfid_type);
         void rfidRead();
-        //void checkMagazineUser();
         
-        uint8_t getCurrentUser();
+        bool authenticateUser();
+        bool authenticateMagazine();
+        
+        char * getCurrentUser();
         void setCurrentUser();
 
         uint8_t getCurrentMagazine();
@@ -40,6 +37,5 @@ class NERF_RFID: public MFRC522 {
 
         NERF_RFID () {
             MFRC522(SS_PIN, RST_PIN);
-            //current_user = 10; //debugging purposes
         }
 };

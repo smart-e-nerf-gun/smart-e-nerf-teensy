@@ -7,6 +7,8 @@ void NERF_XBee::setUpXbee() {
 
 void NERF_XBee::sendPayload(uint8_t * value, uint8_t len) {
     
+	setUpXbee();
+
     // Create the transmit packet
     tx = Tx16Request(XBEE_COOR_ADDR, value, len);
     
@@ -35,4 +37,6 @@ void NERF_XBee::sendPayload(uint8_t * value, uint8_t len) {
 	} else {
 		Serial.println("No timely response received.");
 	}
+
+	delay(100);
 }
