@@ -14,51 +14,71 @@
 //Put the following routine to main.cpp
 //================== START ==================
 // #include <NERF_GPS.h>
-// #include <SoftwareSerial.h>
+// #include <HardwareSerial.h>
+// #include <XBee.h>
+
 // #define blinkLED	13
-// static NERF_GPS GPS;
-// static const int GPS_RX = 1, GPS_TX = 0;
-// //This line is necessary for the GPS
-// SoftwareSerial ss(GPS_RX, GPS_TX); //Match the module pins (GPS_RX, GPS_TX)
+// #define GPSserial	Serial1
+
+// gpsFormat nerf;
 
 // void setup() {
-
 // 	// put your setup code here, to run once:
-// 	Serial.begin(9600);
-// 	ss.begin(9600); //Important line for the GPS
-
-// 	optics.setupOptics();
-// 	oled.setupDisplay();
-	
+// 	Serial.begin(115200);
+// 	GPSserial.begin(9600); //Baud rate apparently for the GPS
 // 	pinMode(13, OUTPUT);
+
+//     //Wait for Serial to setup
+// 	while (!Serial); //Waits for the Serial to be setup
+// 	//Serial.print("Debug Point 1\n"); //Debug point. Comment out for real implementation
+// 	//delay(50);
 // }
 
 // void loop() {
-// 	while (ss.available() > 0){
-// 		gps.encode(ss.read());
+// 	while(GPSserial.available() > 0){
+// 		//Serial.print("Debug Point 2\n"); //Debug Point. Comment out for real implementation
+// 		//delay(50);
+
+// 		int data = GPSserial.read();
+// 		//Serial.println(data, DEC);
+// 		gps.encode(data); //Read the Serial port for data
+		
 // 		if (gps.location.isUpdated()){
 // 			digitalWrite(blinkLED, HIGH); //For debugging purpose
+// 			char buffer[100];
+//             char date[100];
+//             char time[100];
 
-// 			char data[100]; //This is what we will send to the Xbee
-// 			// char loc = GPS.getLocation(); //GPS Location
-// 			// char alt = GPS.getAltitude(); //GPS Altitude
-// 			// char date = GPS.getDate(); //GPS Current Date
-// 			// char time = GPS.getTime(); //GPS Current Time
+//             //Store to struct so there is a local record in case of need to display somewhere else
+//             //Location
+// 			nerf.alt = gps.altitude.meters();
+// 			nerf.lat = gps.location.lat();
+// 			nerf.lon = gps.location.lng();
+//             //Date and Time
+//             nerf.hr = gps.time.hour() - 14;
+//             nerf.mn = gps.time.minute();
+// 			nerf.ss = gps.time.second();
+//             nerf.dd = gps.date.day() + 1;
+//             nerf.mm = gps.date.month();
+//             nerf.yy = gps.date.year();
 
-// 			//Concatenate the details
-// 			//sprintf(data, "%i, %i, %i, %i", GPS.getLocation(), GPS.getAltitude(), GPS.getDate(), GPS.getTime());
-// 			//Serial.println(data);
+// 			sprintf(buffer, "[%4.5f, %4.5f, %4.5f]", nerf.lat, nerf.lon, nerf.alt);
+//             sprintf(time, "%02u:%02u:%02u AEST", nerf.hr, nerf.mn, nerf.ss);
+// 			sprintf(date, "%u/%u/%4u", nerf.dd, nerf.mm, nerf.yy);
+// 			// Serial.printf("%f\n", nerf.alt); //For debugging purpose
+// 			Serial.printf("%s\n", buffer);
+//             Serial.printf("%s\n", time);
+// 			Serial.printf("%s\n", date);
 
-// 			// //For debugging purposes only. Comment out if not in use
-// 			// Serial.printf("GPS Data\n");
-// 			// Serial.printf("Location (Lon:Lat): %c \n", loc);
-// 			// Serial.printf("Altitude: %c \n", alt);
-// 			// Serial.printf("Date: %c \n", date);
-// 			// Serial.printf("\nCurrent Time: %c \n", time);
+// 			// //For debugging purpose only
+// 			// Serial.printf("\n===== GPS Data =====\n");
+// 			// Serial.println(gps.location.lat(), 4); //GPS Latitude
+// 			// Serial.println(gps.location.lng(), 4); //GPS Longitude
+// 			// Serial.println(gps.altitude.meters(), 4); //GPS Altitude
+// 			// Serial.println(gps.date.value(), DEC); //GPS Current Date
+// 			// Serial.println(gps.time.value(), DEC); //GPS Current Time
 
 // 			digitalWrite(blinkLED, LOW); //For debuggin purpose
-// 			//Give a bit of delay? I am not sure if this actually stuffs the routine
-// 			//delay(50); 
 // 		}
 // 	}
 // }
@@ -66,62 +86,26 @@
 #include "Arduino.h"
 #include "NERF_GPS.h"
 
-using namespace std; //For C++
+static const double LONDON_LAT = 51.508131;
+static const double LONDON_LON = -0.128002;
 
-//We will have to use the following structs/class
-//Class::NERF_Location
-//Class::NERF_TimeDate
-static const double LONDON_LAT = 51.508131, LONDON_LON = -0.128002;
+// double NERF_GPS::getLatitude(){ //This will be used for getting the longitude/latitude location of the GPS
+//     //Start function here
+//     return gps.location.lat(); 
+//     //format.lat = 12.3456; //For debug purpose
+// }
 
-char * NERF_GPS::getDate(){
-    //Start function here
-    gpsFormat format;
-    char data[100]; //DATE variable to store the date
+// double NERF_GPS::getLongitude(){ //This will be used for getting the longitude/latitude location of the GPS
+//     //Start function here
+//     return gps.location.lng(); 
+//     //format.lon = -123.3456; //For debug purpose
+// }
 
-    //Uncomment for real application
-    format.yy = gps.date.year();  //TinyGPS year() function
-    format.mm = gps.date.month(); //TinyGPS month() function
-    format.dd = gps.date.day();   //TinyGPS day() function
-
-    // //For testing purpose only. Comment out in real application
-    // format.dd = 16;
-    // format.mm = 12;
-    // format.yy = 19;
-
-    sprintf(data, "%u/%u/%u", format.dd, format.mm, format.yy);
-    return data;
-}
-
-char * NERF_GPS::getTime(){
-    gpsFormat format;
-    char data[50];
-    format.hr = gps.time.hour();
-    format.mn = gps.time.minute(); 
-
-    sprintf(data, "%6d:%d", format.hr, format.mn);
-    return data;
-}
-
-char * NERF_GPS::getLocation(){ //This will be used for getting the longitude/latitude location of the GPS
-    //Start function here
-    gpsFormat format;
-    char data[50];
-    format.lon = gps.location.lng(); //Get longitude 
-    format.lat = gps.location.lat(); //Ge latitude
-
-    //Convert the value to char first before creating 
-    sprintf(data, "%d:%d", format.lon, format.lat); 
-    return data;
-}
-
-char *  NERF_GPS::getAltitude(){ //This will be used to get the altitude (from sea level) of the GPS
-    //Start function here
-    gpsFormat format;
-    char data[50];
-    format.alt = gps.altitude.meters(); //Gets the altitude of the GPS module in meters -> struct
-    
-    sprintf(data, "%6i meter/s", format.alt); 
-    return data;
-}
+// double NERF_GPS::getAltitude(){ //This will be used to get the altitude (from sea level) of the GPS
+//     //Start function here
+//     //Gets the altitude of the GPS module in meters -> struct
+//     double alt = gps.altitude.meters(); 
+//     return alt;
+// }
 
 
