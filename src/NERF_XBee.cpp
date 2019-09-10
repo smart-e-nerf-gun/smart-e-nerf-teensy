@@ -2,12 +2,13 @@
 
 void NERF_XBee::setUpXbee() {
 	XBeePort.begin(115200);
+	while (!XBeePort) ; // Wait for serial port to be available
 	xbee.setSerial(XBeePort);
 }
 
 void NERF_XBee::sendPayload(uint8_t * value, uint8_t len) {
     
-	setUpXbee();
+	xbee.setSerial(XBeePort);
 
     // Create the transmit packet
     tx = Tx16Request(XBEE_COOR_ADDR, value, len);
