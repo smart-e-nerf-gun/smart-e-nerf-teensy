@@ -44,7 +44,7 @@
 // 		gps.encode(data); //Read the Serial port for data
 		
 // 		if (gps.location.isUpdated()){
-// 			digitalWrite(blinkLED, HIGH); //For debugging purpose
+// 			//digitalWrite(blinkLED, HIGH); //For debugging purpose
 // 			char buffer[100];
 //             char date[100];
 //             char time[100];
@@ -62,13 +62,13 @@
 //             nerf.mm = gps.date.month();
 //             nerf.yy = gps.date.year();
 
-// 			sprintf(buffer, "[%4.5f, %4.5f, %4.5f]", nerf.lat, nerf.lon, nerf.alt);
-//             sprintf(time, "%02u:%02u:%02u AEST", nerf.hr, nerf.mn, nerf.ss);
-// 			sprintf(date, "%u/%u/%4u", nerf.dd, nerf.mm, nerf.yy);
-// 			// Serial.printf("%f\n", nerf.alt); //For debugging purpose
-// 			Serial.printf("%s\n", buffer);
-//             Serial.printf("%s\n", time);
-// 			Serial.printf("%s\n", date);
+// 			// sprintf(buffer, "[%4.5f, %4.5f, %4.5f]", nerf.lat, nerf.lon, nerf.alt);
+//             // sprintf(time, "%02u:%02u:%02u AEST", nerf.hr, nerf.mn, nerf.ss);
+// 			// sprintf(date, "%u/%u/%4u", nerf.dd, nerf.mm, nerf.yy);
+// 			// // Serial.printf("%f\n", nerf.alt); //For debugging purpose
+// 			// Serial.printf("%s\n", buffer);
+//             // Serial.printf("%s\n", time);
+// 			// Serial.printf("%s\n", date);
 
 // 			// //For debugging purpose only
 // 			// Serial.printf("\n===== GPS Data =====\n");
@@ -78,7 +78,7 @@
 // 			// Serial.println(gps.date.value(), DEC); //GPS Current Date
 // 			// Serial.println(gps.time.value(), DEC); //GPS Current Time
 
-// 			digitalWrite(blinkLED, LOW); //For debuggin purpose
+// 			//digitalWrite(blinkLED, LOW); //For debuggin purpose
 // 		}
 // 	}
 // }
@@ -86,26 +86,49 @@
 #include "Arduino.h"
 #include "NERF_GPS.h"
 
+#define GPSserial	Serial1
+
+gpsFormat nerf;
+
+//This is the origin point of GPS reading.
 static const double LONDON_LAT = 51.508131;
 static const double LONDON_LON = -0.128002;
 
-// double NERF_GPS::getLatitude(){ //This will be used for getting the longitude/latitude location of the GPS
-//     //Start function here
-//     return gps.location.lat(); 
-//     //format.lat = 12.3456; //For debug purpose
-// }
+void NERF_GPS::GPSSetup() {
+	GPSserial.begin(9600); //Baud rate apparently for the GPS // Initiate  SPI bus
+    Serial.println("Acquiring data...");
 
-// double NERF_GPS::getLongitude(){ //This will be used for getting the longitude/latitude location of the GPS
-//     //Start function here
-//     return gps.location.lng(); 
-//     //format.lon = -123.3456; //For debug purpose
-// }
+    while (!Serial); //Waits for the Serial to be setup
+}
 
-// double NERF_GPS::getAltitude(){ //This will be used to get the altitude (from sea level) of the GPS
-//     //Start function here
-//     //Gets the altitude of the GPS module in meters -> struct
-//     double alt = gps.altitude.meters(); 
-//     return alt;
-// }
+bool NERF_GPS::GPSRun(){
+    while(GPSserial.available() > 0){
+		//Serial.print("Debug Point 2\n"); //Debug Point. Comment out for real implementation
+		//delay(50);
+
+		int data = GPSserial.read();
+		//Serial.println(data, DEC);
+		gps.encode(data); //Read the Serial port for data
+		
+		if (gps.location.isUpdated()){
+			//digitalWrite(blinkLED, HIGH); //For debugging purpose
+			uint8_t buffer[50];
+            char temp[50]; //Temp data to store payload
+
+            //Store to struct so there is a local record in case of need to display somewhere else
+            //Location
+			nerf.alt = gps.altitude.meters();
+			nerf.lat = gps.location.lat();
+			nerf.lon = gps.location.lng();
+            //Date and Time
+            nerf.hr = gps.time.hour() - 14;
+            nerf.mn = gps.time.minute();
+			nerf.ss = gps.time.second();
+            nerf.dd = gps.date.day() + 1;
+            nerf.mm = gps.date.month();
+            nerf.yy = gps.date.year();
+
+            sprintf(temp, "4.5f%, %4.5f, %4.5f", nerf.lon, nerf.lat, nerf.alt);
+}
 
 

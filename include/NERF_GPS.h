@@ -1,6 +1,7 @@
 #pragma once
 #include <Arduino.h>
 #include <TinyGPS++.h>
+#include <HardwareSerial.h>
 
 static TinyGPSPlus gps; //Points/links to the TinyGPSPlus library
 
@@ -25,12 +26,5 @@ struct gpsFormat{
 class NERF_GPS : public TinyGPSPlus {
     private:
     public:
-        //Leave this empty for now as most information will be sent through anyway
-        //This is pretty much the main class that would be called from the main.
-        //Everything here would be a mix of the class functions listed below
-
-        //The reason why I removed the class functions is because the functions could not
-        //return the values that the TinyGPSPlus functions return. I believe it's because
-        //the return values are not casted (in the TinyGPSPlus.h). I do not want to modify
-        //the GPS library code.
+        void GPSSetup(); //Setup the GPS module
 };
