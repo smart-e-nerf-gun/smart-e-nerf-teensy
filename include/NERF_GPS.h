@@ -27,4 +27,5 @@ class NERF_GPS : public TinyGPSPlus {
     private:
     public:
         void GPSSetup(); //Setup the GPS module
+        bool GPSRun(); //Acquire data from GPS module
 };
