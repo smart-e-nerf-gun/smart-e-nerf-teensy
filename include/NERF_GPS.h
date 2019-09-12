@@ -2,6 +2,7 @@
 #include <Arduino.h>
 #include <TinyGPS++.h>
 #include <HardwareSerial.h>
+#include <NERF_XBee.h>
 
 static TinyGPSPlus gps; //Points/links to the TinyGPSPlus library
 
@@ -27,5 +28,5 @@ class NERF_GPS : public TinyGPSPlus {
     private:
     public:
         void GPSSetup(); //Setup the GPS module
-        bool GPSRun(); //Acquire data from GPS module
+        bool GPSAcquireSend(); //Acquire data from GPS module
 };

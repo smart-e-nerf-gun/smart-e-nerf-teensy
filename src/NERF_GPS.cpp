@@ -96,13 +96,14 @@ static const double LONDON_LON = -0.128002;
 
 void NERF_GPS::GPSSetup() {
 	GPSserial.begin(9600); //Baud rate apparently for the GPS // Initiate  SPI bus
-    Serial.println("Acquiring data...");
+    //Serial.println("Acquiring data...");
 
-    while (!Serial); //Waits for the Serial to be setup
+    //while (!Serial); //Waits for the Serial to be setup
 }
 
-bool NERF_GPS::GPSRun(){
-    while(GPSserial.available() > 0){
+bool NERF_GPS::GPSAcquireSend(){
+    int i = 0;
+    while (GPSserial.available() > 0 && i < 3){
 		//Serial.print("Debug Point 2\n"); //Debug Point. Comment out for real implementation
 		//delay(50);
 
@@ -112,7 +113,6 @@ bool NERF_GPS::GPSRun(){
 		
 		if (gps.location.isUpdated()){
 			//digitalWrite(blinkLED, HIGH); //For debugging purpose
-			uint8_t buffer[50];
             char temp[50]; //Temp data to store payload
 
             //Store to struct so there is a local record in case of need to display somewhere else
@@ -128,7 +128,17 @@ bool NERF_GPS::GPSRun(){
             nerf.mm = gps.date.month();
             nerf.yy = gps.date.year();
 
-            sprintf(temp, "4.5f%, %4.5f, %4.5f", nerf.lon, nerf.lat, nerf.alt);
-}
+            i++; //Increment data counter
 
+            sprintf(temp, "DG%4.5f,%4.5f,%4.5f", nerf.lon, nerf.lat, nerf.alt);
+
+            //Debugging for payload
+            Serial.printf("%s\n", temp);
+
+            nerf_xbee.sendPayload((uint8_t*)temp, sizeof(temp));
+
+            return true; 
+        }
+    }
+}
 
