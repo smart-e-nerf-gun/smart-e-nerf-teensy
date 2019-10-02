@@ -89,6 +89,7 @@ void loop() {
 			break;
 		}	
 		case TRANSMIT: {
+			net
 			break;
 		}			
 
