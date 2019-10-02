@@ -73,15 +73,19 @@ void loop() {
 		}
 
 		case TRANSMIT_USER_DETAILS: {
+			nextState = READY;
 			break;
 		}
 		case READY: {
+			nextState = ACTIVE;
 			break;
 		}
 		case ACTIVE: {
+			nextState = READ;
 			break;
 		}
 		case READ: {
+			nextState = TRANSMIT;
 			break;
 		}	
 		case TRANSMIT: {
