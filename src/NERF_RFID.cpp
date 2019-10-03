@@ -121,8 +121,20 @@ bool NERF_RFID::authenticateUser()
 
 bool NERF_RFID::authenticateMagazine()
 {
-
-	return true;
+	rfidRead();
+	if (rfidAuthenticate(true))
+	{ // true for magazine
+		Serial.println("Valid Magazine");
+		Serial.println();
+		//delay(3000);
+		return true;
+	}
+	else
+	{
+		Serial.println("Invalid Magazine");
+		//delay(3000);
+		return false;
+	}
 }
 
 char *NERF_RFID::getCurrentUser()
