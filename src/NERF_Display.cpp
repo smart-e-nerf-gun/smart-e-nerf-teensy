@@ -68,6 +68,29 @@ const unsigned char auth[] = {
     0x00, 0x00, 0x00, 0x3F, 0xFE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x07, 0xC0, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
+void NERF_Display::testfunction(){
+  unsigned int shotcount=0;
+  clearDisplay();
+  
+  setTextColor(WHITE); // Draw white text
+  
+  cp437(true);         // Use full 256 char 'Code Page 437' font
+  for(int16_t i=0; i<256; i++) {
+    delay(1000);
+    clearDisplay();
+    setTextSize(1.5);      // Normal 1:1 pixel scale
+    setCursor(0, 0);     // Start at top-left corner
+    printf(F("User:Luke"));
+    setTextSize(4);      // Normal 1:1 pixel scale
+    setCursor(50, 30);
+    shotcount+=1;
+    print(shotcount);
+    
+    display();
+  }
+
+}
+
 void NERF_Display::testdrawchar()
 {
   clearDisplay();
@@ -77,52 +100,37 @@ void NERF_Display::testdrawchar()
   setCursor(0, 0);     // Start at top-left corner
   cp437(true);         // Use full 256 char 'Code Page 437' font
 
-  // Not all the characters will fit on the display. This is normal.
+  // Not all the characters will fit on the  This is normal.
   // Library will draw what it can and the rest will be clipped.
-  for (int16_t i = 0; i < 256; i++)
-  {
-    if (i == '\n')
-      write(' ');
-    else
-      write(i);
+  for(int16_t i=0; i<256; i++) {
+    if(i == '\n') write(' ');
+    else          write(i);
   }
+
+  display();
+  delay(2000);
 }
 
-void NERF_Display::styles()
+void NERF_Display::teststyles()
 {
-}
-
-
-void NERF_Display::testscrolltext() {
   clearDisplay();
 
-  setTextSize(2); // Draw 2X-scale text
+  setTextSize(1);             // Normal 1:1 pixel scale
+  setTextColor(WHITE);        // Draw white text
+  setCursor(0,0);             // Start at top-left corner
+  println(F("Hello, world!"));
+
+  setTextColor(BLACK, WHITE); // Draw 'inverse' text
+  println(3.141592);
+
+  setTextSize(2);             // Draw 2X-scale text
   setTextColor(WHITE);
-  setCursor(10, 0);
-  println(F("scroll"));
-  display();      // Show initial text
-  delay(100);
+  print(F("0x"));
+  println(0xDEADBEEF, HEX);
 
-  // Scroll in various directions, pausing in-between:
-  startscrollright(0x00, 0x0F);
+  display();
   delay(2000);
-  stopscroll();
-  delay(1000);
-  startscrollleft(0x00, 0x0F);
-  delay(2000);
-  stopscroll();
-  delay(1000);
-  startscrolldiagright(0x00, 0x07);
-  delay(2000);
-  startscrolldiagleft(0x00, 0x07);
-  delay(2000);
-  stopscroll();
-  delay(1000);
 }
-
-//   display();
-//   //delay(2000);
-// }
 
 void NERF_Display::display_unauth()
 {

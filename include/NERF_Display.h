@@ -20,8 +20,8 @@ class NERF_Display: public Adafruit_SSD1306 {
 
         void setupDisplay();
         void testdrawchar();
-        void styles();
-        void testscrolltext();
+        void teststyles();
+        void testfunction();
         void display_unauth();
         void display_auth();
         void invert_display();
