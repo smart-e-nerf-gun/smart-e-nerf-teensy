@@ -133,8 +133,9 @@ bool NERF_GPS::GPSAcquireSend(){
             sprintf(temp, "DG%4.5f,%4.5f,%4.5f", nerf.lon, nerf.lat, nerf.alt);
 
             //Debugging for payload
-            Serial.printf("%s\n", temp);
-
+            //Serial.printf("%s\n", temp); //Comment out for debugging
+            
+            //Send to Node-RED
             nerf_xbee.sendPayload((uint8_t*)temp, sizeof(temp));
 
             return true; 
