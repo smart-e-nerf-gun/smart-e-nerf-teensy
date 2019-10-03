@@ -86,10 +86,43 @@ void NERF_Display::testdrawchar()
     else
       write(i);
   }
-
-  display();
-  //delay(2000);
 }
+
+void NERF_Display::styles()
+{
+}
+
+
+void NERF_Display::testscrolltext() {
+  clearDisplay();
+
+  setTextSize(2); // Draw 2X-scale text
+  setTextColor(WHITE);
+  setCursor(10, 0);
+  println(F("scroll"));
+  display();      // Show initial text
+  delay(100);
+
+  // Scroll in various directions, pausing in-between:
+  startscrollright(0x00, 0x0F);
+  delay(2000);
+  stopscroll();
+  delay(1000);
+  startscrollleft(0x00, 0x0F);
+  delay(2000);
+  stopscroll();
+  delay(1000);
+  startscrolldiagright(0x00, 0x07);
+  delay(2000);
+  startscrolldiagleft(0x00, 0x07);
+  delay(2000);
+  stopscroll();
+  delay(1000);
+}
+
+//   display();
+//   //delay(2000);
+// }
 
 void NERF_Display::display_unauth()
 {
