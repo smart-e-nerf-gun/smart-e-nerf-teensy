@@ -3,87 +3,19 @@
 #include <NERF_RFID.h>
 #include <NERF_Display.h>
 
-static NERF_RFID nerf_rfid;
-static NERF_Display nerf_display;
-
-enum state
-{
-	UNAUTHORISED,
-	AUTHORISED
-	//TRANSMIT_USER_DETAILS,
-	//READY,
-	//ACTIVE,
-	//READ,
-	//TRANSMIT,
-	//UPDATE_DISPLAY,
-	//SLEEP
-};
-
-state currentState = UNAUTHORISED;
-state nextState = UNAUTHORISED;
-
-void setup()
-{
+void setup() {
 
 	Serial.begin(115200);
 	delay(2000);
 	Serial.println("In setup");
 
 	nerf_xbee.setUpXbee();
-	nerf_rfid.rfidSetup();
-	nerf_display.setupDisplay();
+
 }
 
-void loop()
-{
-	// put your main code here, to run repeatedly:
+void loop() {
 
-	// State machine shall be implemented here.
-	// The behaviour for each state and the next state logic shall be implemented here.
-	// States be be defined as enums in
-	switch (currentState)
-	{
+	nerf_xbee.receivePayload();
+	
 
-	case UNAUTHORISED:
-	{
-		//nerf_rfid.authenticateUser();
-		Serial.println("In un-auth state");
-		nerf_display.display_unauth();
-		// uint8_t test_payload[] = "In un-auth state";
-		// nerf_xbee.sendPayload(test_payload, sizeof(test_payload));
-
-		if (nerf_rfid.authenticateUser())
-		{
-			nextState = AUTHORISED;
-		}
-		else
-		{
-			nerf_display.invert_display();
-			nextState = UNAUTHORISED;
-		}
-		/*
-				*  Scan RFID reader here and check if an authorised user has scanned on.
-				*  Stay in unauthorised or move to nextstate if successful.
-				*  Transmit to sever to check if the card used is a valid one.
-				*/
-		break;
-	}
-
-	case AUTHORISED:
-	{
-		Serial.println("In Auth state");
-		nerf_display.display_auth();
-		//nerf_display.testdrawchar();
-		nextState = AUTHORISED;
-	}
-
-	default:
-	{
-		currentState = nextState;
-	}
-	}
-
-	currentState = nextState;
-
-	delay(1000);
 }

@@ -10,8 +10,11 @@ class NERF_XBee {
 
   private:
 	XBee xbee;
+	
 	Tx16Request tx;
 	TxStatusResponse txStatus;
+	
+	Rx16Response rx16 = Rx16Response();
 
   public:
 	NERF_XBee() {
@@ -21,6 +24,7 @@ class NERF_XBee {
 
 	void setUpXbee();
 	void sendPayload(uint8_t *value, uint8_t len);
+	void receivePayload();
 };
 
 static NERF_XBee nerf_xbee;
