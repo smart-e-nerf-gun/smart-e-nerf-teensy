@@ -2,8 +2,8 @@
 
 #include <analogComp.h>
 
-#define OPTIC_SENSOR_1_PIN  14
-#define OPTIC_SENSOR_2_PIN  15
+#define OPTIC_SENSOR_1_PIN  23
+#define OPTIC_SENSOR_2_PIN  3
 
 class NERF_Optics {
 
@@ -12,8 +12,8 @@ class NERF_Optics {
         static bool read_first_sensor;
         static volatile unsigned long time1, duration;
 
-        static void toggleLED_1();
-        static void toggleLED_2();
+        static void opt1Iqr();
+        static void opt2Iqr();
         static void setupOptics();
 
 };
