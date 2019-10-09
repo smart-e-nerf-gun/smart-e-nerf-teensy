@@ -12,6 +12,7 @@ class NERF_Optics {
         static bool read_first_sensor;
         static volatile unsigned long time1, duration;
 
+
         static void opt1Iqr();
         static void opt2Iqr();
         static void setupOptics();
