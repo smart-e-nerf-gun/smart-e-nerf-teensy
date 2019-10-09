@@ -16,6 +16,5 @@ void setup() {
 void loop() {
 
 	nerf_xbee.receivePayload();
-	
 
 }
