@@ -10,9 +10,18 @@ static NERF_RFID nerf_rfid;
 static NERF_Display nerf_display;
 static NERF_GPS nerf_gps;
 
-int auth_flag;
+//Global variables here
 int read_flag;
+
+//Declare variables here for the RFID
+int auth_flag;
+char mag_id;
+//Declare variables here for QRD
 int rem_shots;
+
+//Declare global variables here for GPS
+
+//Declare global variables here for IMU
 
 //This is the states for the main state machine
 enum state {
@@ -103,6 +112,8 @@ void loop() {
 		case READ: {
 			switch(active_cState){
 				case READ_RFID: {
+					//Get the ID of the Magazine
+					mag_id = nerf_rfid.authenticateMagazine(); //Read once for the magazine
 					if(nerf_rfid.authenticateMagazine()){
 						Serial.println("RFID Data sent!"); //Comment out for debugging
 						//Set global var
