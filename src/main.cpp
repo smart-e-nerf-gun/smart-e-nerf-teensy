@@ -3,12 +3,14 @@
 #include <NERF_RFID.h>
 #include <NERF_XBee.h>
 #include <NERF_GPS.h>
+#include <NERF_Optics.h>
 #include <avr/io.h> //Interrupt library
 #include <avr/interrupt.h>
 
 static NERF_RFID nerf_rfid;
 static NERF_Display nerf_display;
 static NERF_GPS nerf_gps;
+static NERF_Optics nerf_optics;
 
 //Global variables here
 int read_flag;
@@ -16,6 +18,7 @@ int read_flag;
 //Declare variables here for the RFID
 int auth_flag;
 char mag_id;
+char prev_mag;
 //Declare variables here for QRD
 int rem_shots;
 
@@ -54,10 +57,13 @@ void setup() {
 	delay(2000);
 	Serial.println("In setup");
 
+	//Call functions to setup the functions for the sensors
+	nerf_optics.setupOptics();
 	nerf_gps.GPSSetup();
 	nerf_xbee.setUpXbee();
 	nerf_rfid.rfidSetup();
 	nerf_display.setupDisplay();
+
 }
 
 void loop() {
@@ -114,7 +120,7 @@ void loop() {
 				case READ_RFID: {
 					//Get the ID of the Magazine
 					mag_id = nerf_rfid.authenticateMagazine(); //Read once for the magazine
-					if(nerf_rfid.authenticateMagazine()){
+					if(mag_id == prev_mag) {
 						Serial.println("RFID Data sent!"); //Comment out for debugging
 						//Set global var
 						rem_shots = 12;
@@ -148,6 +154,7 @@ void loop() {
 					break;
 				}
 				case READ_IMU:{
+					//I2C 
 					active_nState = READ_RFID;
 					read_flag = 0;
 					break;
