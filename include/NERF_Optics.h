@@ -1,6 +1,6 @@
 #pragma once
 
-#include <analogComp.h>
+#include <NERF_XBee.h>
 
 #define OPTIC_SENSOR_1_PIN  23
 #define OPTIC_SENSOR_2_PIN  3
@@ -11,6 +11,7 @@ class NERF_Optics {
 
         static bool read_first_sensor;
         static volatile unsigned long time1, duration;
+
 
 
         static void opt1Iqr();

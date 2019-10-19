@@ -30,14 +30,16 @@ void NERF_XBee::sendPayload(uint8_t * value, uint8_t len) {
 				Serial.println("Did not receive ack!");
 			}
 		}
-	} else if (xbee.getResponse().isError()) {
-
-		Serial.println("Could not read response.");
-		Serial.println(xbee.getResponse().getErrorCode());
-
-	} else {
-		Serial.println("No timely response received.");
 	}
+		
+	// } else if (xbee.getResponse().isError()) {
+
+	// 	Serial.println("Could not read response.");
+	// 	Serial.println(xbee.getResponse().getErrorCode());
+
+	// } else {
+	// 	Serial.println("No timely response received.");
+	// }
 
 	delay(100);
 }

@@ -44,13 +44,43 @@ void NERF_Optics::opt1Iqr() {
  * 
  * Reset the flag for the next bullet.
  */
+
+
+
 void NERF_Optics::opt2Iqr() {
 
     if (read_first_sensor) {
 
         duration = micros() - time1;
         read_first_sensor = false;
-        Serial.println(duration);
+        // Serial.println(duration);
+
+        char buffer [sizeof(long)*8+1] = {'*'};
+
+
+        ltoa (duration,buffer, DEC);
+
+
+
+
+
+        nerf_xbee.sendPayload((uint8_t *) buffer, sizeof(buffer));
+
+
+        // // Serial.println(duration);
+
+        // String val = String(duration);
+        // int str_len = val.length() + 1; 
+        
+        // // Prepare the character array (the buffer) 
+        // char char_array[str_len];
+        
+        // // Copy it over 
+        // val.toCharArray(char_array, str_len); 
+
+        // // char buffer [sizeof(long)*8+1];
+        // // ltoa (duration,buffer, DEC);
+        // nerf_xbee.sendPayload((uint8_t *) char_array, sizeof(char_array));
 
     }
     
@@ -69,7 +99,7 @@ void NERF_Optics::setupOptics() {
 
     attachInterrupt(digitalPinToInterrupt(OPTIC_SENSOR_1_PIN), opt1Iqr, FALLING);
     attachInterrupt(digitalPinToInterrupt(OPTIC_SENSOR_2_PIN), opt2Iqr, FALLING);
-
+        
     return;
 
 }

@@ -1,7 +1,7 @@
 #include <Arduino.h>
 // #include <NERF_Display.h>
 // #include <NERF_RFID.h>
-// #include <NERF_XBee.h>
+#include <NERF_XBee.h>
 // #include <NERF_GPS.h>
 
 #include <avr/io.h> //Interrupt library
@@ -11,8 +11,18 @@
 
 NERF_Optics optics;
 
+    uint8_t msg1[18] = "Set-up interrupts";
+    uint8_t msg2[27] = "Finished set-up interrupts";
+
+    
+    
+    
+
 void setup() {
 	optics.setupOptics();
+	nerf_xbee.sendPayload(msg1, sizeof(msg1));
+	nerf_xbee.setUpXbee();
+	nerf_xbee.sendPayload(msg2, sizeof(msg2));
 }
 
 void loop() {
