@@ -15,6 +15,9 @@ void setup() {
 
 void loop() {
 
-	nerf_xbee.receivePayload();
+	String test = nerf_xbee.receivePayload(3000);
+	Serial.println(test);
+
+	
 
 }

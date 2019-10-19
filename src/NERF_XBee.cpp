@@ -8,35 +8,49 @@ void NERF_XBee::setUpXbee() {
 
 }
 
-void NERF_XBee::receivePayload() {
+String NERF_XBee::receivePayload(int timeout) {
 
-	xbee.setSerial(XBeePort);									// Set serial port
+	String rcv_data = "\0";
 
-	xbee.readPacket(3000);										// Listen for up to 3 seconds
-
-	if (xbee.getResponse().isAvailable()) {						// Got something
-		if (xbee.getResponse().getApiId() == RX_16_RESPONSE) {	// If the response was of RX_16_RESPONSE
-			
-			xbee.getResponse().getRx16Response(rx16);
-
-			Serial.println(rx16.getDataLength() );
-
-			// uint8_t * payload_ptr = NULL;
-			// payload_ptr = new uint8_t[rx16.getDataLength()];
-
-			// payload_ptr
-
-			uint8_t payload[rx16.getDataLength()];
-			memcpy(payload, rx16.getData(), rx16.getDataLength());
-
-			String str = (char *) payload;
-			Serial.println(str);
-
-			
-
-		}
+	if (timeout < 0) {
+		return rcv_data;
 	}
 
+	unsigned long start = millis();
+
+    while (int((millis() - start)) < timeout) {
+
+		if (XBeePort.available() >= 9) {
+			
+			if (XBeePort.read() == 0x7E) { // Check the start delimeter
+
+				byte discard_byte = XBeePort.read();	// Length MSB byte
+				byte data_len = XBeePort.read(); // Length LSB byte
+				byte payload_len = data_len - 5;
+				discard_byte = XBeePort.read();	// Frame type
+				discard_byte = XBeePort.read(); // Source addr MSB
+				discard_byte = XBeePort.read(); // Spurce addr LSB
+				discard_byte = XBeePort.read(); // RSSI
+				discard_byte = XBeePort.read();	// Discard the options byte
+
+				uint8_t payload[payload_len + 1];
+
+				for (int i = 0; i < payload_len; i++) {
+					payload[i] = XBeePort.read();
+					delay(1);
+				}
+
+				payload[payload_len] = '\0';
+
+				discard_byte = XBeePort.read();	// Discard the options byte
+
+				rcv_data = String( (char*) payload);
+			}
+			return rcv_data;
+		}		
+    }
+
+	return rcv_data;
 }
 
 void NERF_XBee::sendPayload(uint8_t *value, uint8_t len) {

@@ -24,7 +24,7 @@ class NERF_XBee {
 
 	void setUpXbee();
 	void sendPayload(uint8_t *value, uint8_t len);
-	void receivePayload();
+	String receivePayload(int timeout);
 };
 
 static NERF_XBee nerf_xbee;
