@@ -68,8 +68,11 @@ const unsigned char auth[] = {
     0x00, 0x00, 0x00, 0x3F, 0xFE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x07, 0xC0, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
-void NERF_Display::testfunction(){
-  unsigned int shotcount=0;
+void NERF_Display::testfunction(char* name, unsigned int shotcount){
+  char name_buffer [5];
+  strcpy(name_buffer, name);
+  unsigned int shoutcount_buffer=shotcount;
+
   clearDisplay();
   
   setTextColor(WHITE); // Draw white text
@@ -80,7 +83,7 @@ void NERF_Display::testfunction(){
     clearDisplay();
     setTextSize(1.5);      // Normal 1:1 pixel scale
     setCursor(0, 0);     // Start at top-left corner
-    printf(F("User:Luke"));
+    printf(F(name_buffer));
     setTextSize(4);      // Normal 1:1 pixel scale
     setCursor(50, 30);
     shotcount+=1;
