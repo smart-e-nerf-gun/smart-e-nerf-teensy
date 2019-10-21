@@ -8,8 +8,6 @@
 #include <NERF_XBee.h>
 #include <ardprintf.h>
 
-Adafruit_SSD1306 display(128, 64);
-
 char name[6];
 unsigned int shotcount;
 
