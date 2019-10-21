@@ -21,12 +21,11 @@ class NERF_Display: public Adafruit_SSD1306 {
         void setupDisplay();
         void testdrawchar();
         void teststyles();
-        void testfunction();
+        void testfunction(char* name, unsigned int shoutcount);
         void display_unauth();
         void display_auth();
         void invert_display();
-        
-
+        void update_display(char* name);
 
         NERF_Display() : Adafruit_SSD1306(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET) {
             // Using the constructor from Adafruit. Add more functionality here to initilise any member values.

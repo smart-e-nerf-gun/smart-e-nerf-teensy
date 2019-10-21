@@ -38,7 +38,7 @@ bool NERF_RFID::rfidAuthenticate(bool rfid_type)
 	Serial.println();
 
 	nerf_xbee.sendPayload(payload, sizeof(payload));
-
+	
 	//return true; //return true or false depending on server response
 	//if statement for debugging to simulate server response
 	String content = "";
@@ -50,7 +50,7 @@ bool NERF_RFID::rfidAuthenticate(bool rfid_type)
 		content.concat(String(uid.uidByte[i], HEX));
 	}
 	content.toUpperCase();
-	if (content.substring(0) == "B268B573")
+	if (content.substring(0) == "B268B573") //if array[1]==1
 	{
 		return true;
 	}
