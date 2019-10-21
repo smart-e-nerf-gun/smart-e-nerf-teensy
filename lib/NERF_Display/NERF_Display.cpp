@@ -119,7 +119,7 @@ void NERF_Display::writeMF(int x){
 	setCursor(0, 0); //X,Y Cursor on Y axis would shift 4px down for baseline in 9pt font
 	println(clear_mf); //Clear 12 spaces for the new data 
 	setCursor(0, 0); //Reset cursor placement
-	println(x); //Print the data
+	println(mf); //Print the data
 	println(name);
 }
 
