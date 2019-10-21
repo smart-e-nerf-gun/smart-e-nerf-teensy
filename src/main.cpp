@@ -8,12 +8,16 @@
 #include <NERF_XBee.h>
 #include <ardprintf.h>
 
+Adafruit_SSD1306 display(128, 64);
+
 char name[6];
 unsigned int shotcount;
 
 state current_state = UN_AUTH;
 state next_state = UN_AUTH;
 uint8_t mag_id[4] = {0, 0, 0, 0};
+const char mf_label[8] = {'m', 'i', 's', 'f', 'i', 'r', 'e', 's'};
+const char clear_mf[12] = {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}; //12 spaces "_ _ _ _ m i s f i r e s"
 
 void setup() {
 
@@ -21,7 +25,7 @@ void setup() {
 	delay(2000);
 
 	// #ifdef DEBUG
-	Serial.println("In setup");
+	// Serial.println("In setup");
 	// #endif
 
 	nerf_xbee.setUpXbee();
@@ -29,59 +33,59 @@ void setup() {
 	nerf_display.setupDisplay();
 
 	// #ifdef DEBUG
-	Serial.println("Finished debug");
+	// Serial.println("Finished debug");
 	// #endif
 }
 
 void loop() {
 
-	ardprintf("Current state: %d \n", current_state);
+	// ardprintf("Current state: %d \n", current_state);
 
 	nerf_display.writeMF(random(0, 1000));
 
-	switch (current_state) {
+	// switch (current_state) {
 
-		case UN_AUTH:
+	// 	case UN_AUTH:
 
-			if (nerf_rfid.authenticateUser()) {
-				next_state = AUTH;
-			} else {
-				next_state = UN_AUTH;
-			}
+	// 		if (nerf_rfid.authenticateUser()) {
+	// 			next_state = AUTH;
+	// 		} else {
+	// 			next_state = UN_AUTH;
+	// 		}
 
-			break;
+	// 		break;
 
-		case AUTH:
+	// 	case AUTH:
 
-			next_state = READ_MAG;
+	// 		next_state = READ_MAG;
 
-			break;
+	// 		break;
 
-		case READ_MAG:
+	// 	case READ_MAG:
 
-			next_state = READ_GPS;
-			break;
+	// 		next_state = READ_GPS;
+	// 		break;
 
-		case READ_GPS:
+	// 	case READ_GPS:
 
-			next_state = READ_IMU;
-			break;
+	// 		next_state = READ_IMU;
+	// 		break;
 
-		case READ_IMU:
+	// 	case READ_IMU:
 
-			next_state = READ_MAG;
+	// 		next_state = READ_MAG;
 
-			break;
+	// 		break;
 
-		case ERROR:
-			next_state = ERROR;
-			break;
+	// 	case ERROR:
+	// 		next_state = ERROR;
+	// 		break;
 
-		default:
-			next_state = UN_AUTH;
-	}
+	// 	default:
+	// 		next_state = UN_AUTH;
+	// }
 
-	current_state = next_state;
+	// current_state = next_state;
 
 	delay(1000);
 	

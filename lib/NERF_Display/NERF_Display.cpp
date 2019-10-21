@@ -111,15 +111,19 @@ void NERF_Display::display_auth() {
 void NERF_Display::writeMF(int x){
 	//Take MF char, send it to the screen
 	char mf[4]; //4char, max value 9999
+	ltoa((long) x, mf, 10);
 	sprintf(mf, "%d", x);
-	char name = 'misfires';
-	char clear_mf = '            '; //12 spaces "_ _ _ _ m i s f i r e s"
+	
+
+	Serial.println(mf);
+	Serial.println(mf_label);
+
 	setTextSize(0); //Set text size to 0 to prevent conflict with FONT
-	setFont(&FreeMono9pt7b); //Set the font to 9pt which is 12px(4x3)
-	setCursor(0, 0); //X,Y Cursor on Y axis would shift 4px down for baseline in 9pt font
+	//setFont(&FreeMonoBold24pt7b); //,Y Cursor on Y axis would shift 4px down for baseline in 9pt font
 	println(clear_mf); //Clear 12 spaces for the new data 
 	setCursor(0, 0); //Reset cursor placement
-	println(mf); //Print the data
-	println(name);
+	//println(mf); //Print the data
+	println(mf_label);
+	display();
 }
 
