@@ -33,6 +33,8 @@ bool NERF_RFID::rfidAuthenticate(bool rfid_type) {
 	nerf_xbee.sendPayload(payload, sizeof(payload));
 	content = nerf_xbee.receivePayload(2000);
 
+	Serial.println(content);
+
 	if (content[0] == '1') {
 		content.substring(1, 6).toCharArray(name, 6);
 		return true;
@@ -82,11 +84,9 @@ bool NERF_RFID::authenticateUser() {
 	if (rfidAuthenticate(false)) { // false for user
 		Serial.println("Authorized access");
 		Serial.println();
-		//delay(3000);
 		return true;
 	} else {
 		Serial.println("Access denied");
-		//delay(3000);
 		return false;
 	}
 }
@@ -96,11 +96,9 @@ bool NERF_RFID::authenticateMagazine() {
 	if (rfidAuthenticate(true)) { // true for magazine
 		Serial.println("Valid Magazine");
 		Serial.println();
-		//delay(3000);
 		return true;
 	} else {
 		Serial.println("Invalid Magazine");
-		//delay(3000);
 		return false;
 	}
 }
