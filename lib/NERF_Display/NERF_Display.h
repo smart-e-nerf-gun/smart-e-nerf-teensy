@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Arduino.h>
+#include <NERF.h>
 #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
@@ -21,7 +22,7 @@ class NERF_Display: public Adafruit_SSD1306 {
         void setupDisplay();
         void testdrawchar();
         void teststyles();
-        void testfunction(char* name, unsigned int shoutcount);
+        void updateNameAndRemainingBulets();
         void display_unauth();
         void display_auth();
         void invert_display();
@@ -33,3 +34,5 @@ class NERF_Display: public Adafruit_SSD1306 {
         
 
 };
+
+static NERF_Display nerf_display;

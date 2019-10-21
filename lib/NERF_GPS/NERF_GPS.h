@@ -1,5 +1,8 @@
 #pragma once
+
 #include <Arduino.h>
+#include <NERF.h>
+
 #include <TinyGPS++.h>
 #include <HardwareSerial.h>
 #include <NERF_XBee.h>
@@ -30,3 +33,5 @@ class NERF_GPS : public TinyGPSPlus {
         void GPSSetup(); //Setup the GPS module
         bool GPSAcquireSend(); //Acquire data from GPS module
 };
+
+static NERF_GPS nerf_gps;

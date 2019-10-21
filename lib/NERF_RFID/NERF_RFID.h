@@ -1,9 +1,12 @@
 #pragma once
 
+#include <Arduino.h>
+#include <NERF.h>
+
 #include <MFRC522.h>
 #include <SPI.h>
 #include <NERF_XBee.h>
-
+#include <NERF_Display.h>
 //#define SS_PIN 10
 //#define RST_PIN 9
 #define SS_PIN 10
@@ -40,3 +43,5 @@ public:
         MFRC522(SS_PIN, RST_PIN);
     }
 };
+
+static NERF_RFID nerf_rfid;

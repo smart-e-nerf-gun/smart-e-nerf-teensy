@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Arduino.h"
+#include <Arduino.h>
+#include <NERF.h>
 #include <xbee-arduino.h>
 
 #define XBeePort Serial3

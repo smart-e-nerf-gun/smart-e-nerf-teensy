@@ -23,7 +23,7 @@ volatile unsigned long NERF_Optics::duration = 0;
  * 
  * Error checking is used fo check if the same sensor is triggered sequentially.
  */
-void NERF_Optics::toggleLED_1() {
+void NERF_Optics::opt1Iqr() {
 
     if (!read_first_sensor) {
 
@@ -44,13 +44,25 @@ void NERF_Optics::toggleLED_1() {
  * 
  * Reset the flag for the next bullet.
  */
-void NERF_Optics::toggleLED_2() {
+
+
+
+void NERF_Optics::opt2Iqr() {
 
     if (read_first_sensor) {
+        Serial.println("Fire!");
 
+        --shotcount;
+        Serial.println(shotcount);
         duration = micros() - time1;
         read_first_sensor = false;
+        // Serial.println(duration);
 
+        char buffer [sizeof(long)*8+1] = {'*'};
+
+        ltoa (duration,buffer, DEC);
+        // nerf_xbee.sendPayload((uint8_t *) buffer, sizeof(buffer));
+        // nerf_display.updateNameAndRemainingBulets();
     }
     
     return;
@@ -61,17 +73,14 @@ void NERF_Optics::toggleLED_2() {
  */
 void NERF_Optics::setupOptics() {
 
+    pinMode(OPTIC_SENSOR_1_PIN, INPUT_PULLUP);
+    pinMode(OPTIC_SENSOR_2_PIN, INPUT_PULLUP);
+
     read_first_sensor = false;          // Default, ready to read the first sensor first
 
-    // These are probably not the right set-up, need to configure this.
-    // We need to check the threshold voltage (and it's corresponding value)
-    
-    analogComparator.setOn(OPTIC_SENSOR_1_PIN, 0);
-    analogComparator.setOn(OPTIC_SENSOR_2_PIN, 0);
-
-    analogComparator.enableInterrupt(toggleLED_1, FALLING); //we set the interrupt and when it has to be raised    
-    analogComparator.enableInterrupt(toggleLED_2, FALLING); //we set the interrupt and when it has to be raised
-
+    attachInterrupt(digitalPinToInterrupt(OPTIC_SENSOR_1_PIN), opt1Iqr, FALLING);
+    attachInterrupt(digitalPinToInterrupt(OPTIC_SENSOR_2_PIN), opt2Iqr, FALLING);
+        
     return;
 
 }

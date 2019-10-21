@@ -83,7 +83,8 @@ void NERF_XBee::sendPayload(uint8_t *value, uint8_t len) {
 
 		Serial.println("Could not read response.");
 		Serial.println(xbee.getResponse().getErrorCode());
-	} else {
+	}
+	else {
 		Serial.println("No timely response received.");
 	}
 }
