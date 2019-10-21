@@ -13,24 +13,31 @@
 #define LOGO_HEIGHT   64
 #define LOGO_WIDTH    64
 
-class NERF_Display: public Adafruit_SSD1306 {
+static Adafruit_SSD1306 display(128, 64);
 
+class NERF_Display : public Adafruit_SSD1306 {
     private:
-
     public:
-
         void setupDisplay();
-        void testdrawchar();
-        void teststyles();
-        void updateNameAndRemainingBulets();
+        // void testdrawchar();
+        // void teststyles();
+        // void updateNameAndRemainingBulets();
         void display_unauth();
         void display_auth();
-        void invert_display();
-        void update_display(char* name);
+        // void invert_display();
+        // void update_display(char* name);
+
+        void writeMF(char mf); //Misfire
+        void writeUN(char un); //User name
+        void writeTS(char ts); //Total shots
+        void writeAC(char ac); //Ammo count
+        void writeBS(char bs); //Bullet speed
 
         NERF_Display() : Adafruit_SSD1306(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET) {
             // Using the constructor from Adafruit. Add more functionality here to initilise any member values.
         }
+
+
         
 
 };

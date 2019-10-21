@@ -1,4 +1,22 @@
 #include "NERF_Display.h"
+#include <Fonts/FreeMonoBold24pt7b.h> //For Ammo count
+#include <Fonts/FreeMono9pt7b.h>  // For all other information
+
+void NERF_Display::setupDisplay() {
+	delay(100);
+	// SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
+	if (!begin(SSD1306_SWITCHCAPVCC, 0x3D)) { // Address 0x3D for 128x64
+		Serial.println(F("SSD1306 allocation failed"));
+		for (;;)
+			; // Don't proceed, loop forever
+	}
+
+	clearDisplay(); //Clear display/buffer
+	setTextColor(WHITE); //Set text color. But its monochrome so there really is no other choice
+	setRotation(0); //Set orientation
+	setTextWrap(false); //To prevent long lines from wrapping around
+	dim(0); //Set brightness. 1 is too dim
+}
 
 static const unsigned char unauth[] = {
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -68,68 +86,6 @@ const unsigned char auth[] = {
 	0x00, 0x00, 0x00, 0x3F, 0xFE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x07, 0xC0, 0x00, 0x00, 0x00,
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
-void NERF_Display::updateNameAndRemainingBulets() { // Name of user, number
-
-	Serial.println("1");
-	
-	clearDisplay();
-	setTextColor(WHITE); // Draw white text
-	cp437(true); // Use full 256 char 'Code Page 437' font
-	clearDisplay();
-	setTextSize(1.5); // Normal 1:1 pixel scale	
-	setCursor(0, 0);  // Start at top-left corner
-	printf(F(name));
-	setTextSize(4); // Normal 1:1 pixel scale
-	setCursor(50, 30);
-	print(shotcount);
-	display();
-
-	Serial.println("end");
-}
-
-void NERF_Display::testdrawchar() {
-
-	clearDisplay();
-	setTextSize(1);		 // Normal 1:1 pixel scale
-	setTextColor(WHITE); // Draw white text
-	setCursor(0, 0);	 // Start at top-left corner
-	cp437(true);		 // Use full 256 char 'Code Page 437' font
-
-	// Not all the characters will fit on the  This is normal.
-	// Library will draw what it can and the rest will be clipped.
-	for (int16_t i = 0; i < 256; i++) {
-		if (i == '\n') {
-			write(' ');
-		}
-    else {
-			write(i);
-		}
-	}
-
-	display();
-	delay(2000);
-}
-
-void NERF_Display::teststyles() {
-	clearDisplay();
-
-	setTextSize(1);		 // Normal 1:1 pixel scale
-	setTextColor(WHITE); // Draw white text
-	setCursor(0, 0);	 // Start at top-left corner
-	println(F("Hello, world!"));
-
-	setTextColor(BLACK, WHITE); // Draw 'inverse' text
-	println(3.141592);
-
-	setTextSize(2); // Draw 2X-scale text
-	setTextColor(WHITE);
-	print(F("0x"));
-	println(0xDEADBEEF, HEX);
-
-	display();
-	delay(2000);
-}
-
 void NERF_Display::display_unauth() {
 	clearDisplay();
 
@@ -152,34 +108,17 @@ void NERF_Display::display_auth() {
 	// delay(1000);
 }
 
-void NERF_Display::invert_display() {
-	invertDisplay(true);
-	delay(250);
-	invertDisplay(false);
-	delay(250);
+void writeMF(int x){
+	//Take MF char, send it to the screen
+	char mf[4]; //4char, max value 9999
+	sprintf(mf, "%d", x);
+	char name = 'misfires';
+	char clear_mf = '            '; //12 spaces "_ _ _ _ m i s f i r e s"
+	display.setFont(&FreeMono9pt7b); //Set the font to 9pt which is 12px(4x3)
+	display.setCursor(0, 59); //X,Y Cursor on Y axis would shift 4px down for baseline in 9pt font
+	display.println(clear_mf); //Clear 12 spaces for the new data 
+	display.setCursor(0, 59); //Reset cursor placement
+	display.println(mf); //Print the data
+	display.println(name);
 }
 
-void NERF_Display::setupDisplay() {
-
-	// SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
-	if (!begin(SSD1306_SWITCHCAPVCC, 0x3D)) { // Address 0x3D for 128x64
-		Serial.println(F("SSD1306 allocation failed"));
-		for (;;)
-			; // Don't proceed, loop forever
-	}
-
-	// Show initial display buffer contents on the screen --
-	// the library initializes this with an Adafruit splash screen.
-	display();
-	delay(2000); // Pause for 2 seconds
-
-	// Clear the buffer
-	clearDisplay();
-
-	// Draw a single pixel in white
-	//drawPixel(10, 10, WHITE);
-
-	// Show the display buffer on the screen. You MUST call display() after
-	// drawing commands to make them visible on screen!
-	//display();
-}
