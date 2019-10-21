@@ -10,12 +10,12 @@ void NERF_Display::setupDisplay() {
 		for (;;)
 			; // Don't proceed, loop forever
 	}
-
-	clearDisplay(); //Clear display/buffer
+	
 	setTextColor(WHITE); //Set text color. But its monochrome so there really is no other choice
 	setRotation(0); //Set orientation
 	setTextWrap(false); //To prevent long lines from wrapping around
 	dim(0); //Set brightness. 1 is too dim
+	clearDisplay(); //Clear display/buffer
 }
 
 static const unsigned char unauth[] = {
@@ -109,21 +109,47 @@ void NERF_Display::display_auth() {
 }
 
 void NERF_Display::writeMF(int x){
-	//Take MF char, send it to the screen
-	char mf[4]; //4char, max value 9999
-	ltoa((long) x, mf, 10);
-	sprintf(mf, "%d", x);
+	// //Take MF char, send it to the screen
+	// char mf[4]; //4char, max value 9999
+	// ltoa((long) x, mf, 10);
+	// sprintf(mf, "%d", x);
 	
 
-	Serial.println(mf);
-	Serial.println(mf_label);
+	// //Serial.println(mf);
+	// //Serial.println(mf_label);
 
-	setTextSize(0); //Set text size to 0 to prevent conflict with FONT
-	//setFont(&FreeMonoBold24pt7b); //,Y Cursor on Y axis would shift 4px down for baseline in 9pt font
-	println(clear_mf); //Clear 12 spaces for the new data 
-	setCursor(0, 0); //Reset cursor placement
-	//println(mf); //Print the data
-	println(mf_label);
-	display();
+	// setTextSize(0); //Set text size to 0 to prevent conflict with FONT
+	// //setFont(&FreeMonoBold24pt7b); //,Y Cursor on Y axis would shift 4px down for baseline in 9pt font
+	// println(clear_mf); //Clear 12 spaces for the new data 
+	// setCursor(0, 0); //Reset cursor placement
+	// println(mf); //Print the data
+	// //println(mf_label);
+	// display();
+}
+
+void NERF_Display::setupStaticText(){
+	//missfire setup test
+	setCursor(0,57);
+  write(0);write(0);write(0);write(0);write(109);write(105);write(115);write(115);//write "miss" in screen strting with blank space
+}
+
+void NERF_Display::test(int count){
+  //char name_buffer=name;
+  unsigned int count_buffer=count;
+  cp437(true);
+  clearDisplay();
+  setTextColor(WHITE); // Draw white text
+  
+  setCursor(0,57);
+  print(count_buffer);
+  display();
+  //Serial.print(mf_label);
+}
+
+void NERF_Display::invert_display(){
+  invertDisplay(true);
+  delay(250);
+  invertDisplay(false);
+  delay(250);
 }
 
