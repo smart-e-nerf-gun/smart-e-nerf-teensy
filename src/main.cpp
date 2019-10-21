@@ -37,6 +37,8 @@ void loop() {
 
 	ardprintf("Current state: %d \n", current_state);
 
+	nerf_display.writeMF(random(0, 1000));
+
 	switch (current_state) {
 
 		case UN_AUTH:
@@ -80,5 +82,7 @@ void loop() {
 	}
 
 	current_state = next_state;
+
+	delay(1000);
 	
 }

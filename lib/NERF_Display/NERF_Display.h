@@ -27,7 +27,7 @@ class NERF_Display : public Adafruit_SSD1306 {
         // void invert_display();
         // void update_display(char* name);
 
-        void writeMF(char mf); //Misfire
+        void writeMF(int x); //Misfire
         void writeUN(char un); //User name
         void writeTS(char ts); //Total shots
         void writeAC(char ac); //Ammo count

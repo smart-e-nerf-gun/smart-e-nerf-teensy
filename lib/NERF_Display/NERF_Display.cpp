@@ -108,7 +108,7 @@ void NERF_Display::display_auth() {
 	// delay(1000);
 }
 
-void writeMF(int x){
+void NERF_Display::writeMF(int x){
 	//Take MF char, send it to the screen
 	char mf[4]; //4char, max value 9999
 	sprintf(mf, "%d", x);
