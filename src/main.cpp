@@ -10,30 +10,41 @@
 char name[6];
 unsigned int shotcount;
 
+state current_state;
+state next_state;
+uint8_t mag_id[4] = {0, 0, 0, 0};
+
+
 void setup() {
 
 	Serial.begin(115200); //Setup everything here. Power up, initilization, etc.
 	delay(2000);
 
-	Serial.println("In setup");
+	#ifdef DEBUG
+		Serial.println("In setup");
+	#endif
 
-	// nerf_xbee.setUpXbee();
-	// nerf_rfid.rfidSetup();
+	
+
+	nerf_xbee.setUpXbee();
+	nerf_rfid.rfidSetup();
 	nerf_display.setupDisplay();
-	nerf_optics.setupOptics();
-	nerf_display.updateNameAndRemainingBulets();
-	delay(100);
-	// nerf_gps.GPSSetup();
 
-	// optics.setupOptics();
-	// nerf_xbee.sendPayload(msg1, sizeof(msg1));
-	// nerf_xbee.setUpXbee();
-	// nerf_xbee.sendPayload(msg2, sizeof(msg2));
+	#ifdef DEBUG
+		Serial.println("Finished debug");
+	#endif
+
+	// nerf_optics.setupOptics();
+	// nerf_gps.GPSSetup();
 }
 
+
+
 void loop() {
-	delay(500);
-	nerf_display.updateNameAndRemainingBulets();
+
+
+	
+
 
 	// delay(2000); // Simply waste some time...
 

@@ -1,21 +1,21 @@
 #pragma once
 
-extern char name[6];
-extern unsigned int shotcount;
+#include <Arduino.h>
+
+#define DEBUG
 
 enum state {	// This is the states for the main state machine
-	UNAUTHORISED,
-	AUTHORISED,
-	READY,
-	ACTIVE,
-	READ,
-	TRANSMIT,
-	UPDATE_DISPLAY,
-	SLEEP
+	UN_AUTH,
+	AUTH,
+	READ_MAG,
+	READ_GPS,
+	READ_IMU,
+	ERROR
 };
 
-enum activeState {	// These are the sub-states for the active state
-	READ_RFID,
-	READ_GPS,
-	READ_IMU
-};
+extern char name[6];
+extern unsigned int shotcount;
+extern uint8_t mag_id[4];
+
+extern state current_state;
+extern state next_state;
