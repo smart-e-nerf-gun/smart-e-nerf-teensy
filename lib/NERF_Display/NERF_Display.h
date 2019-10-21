@@ -29,9 +29,9 @@ class NERF_Display : public Adafruit_SSD1306 {
 
         void writeMF(int x); //Misfire
         void writeUN(char un); //User name
-        void writeTS(char ts); //Total shots
-        void writeAC(char ac); //Ammo count
-        void writeBS(char bs); //Bullet speed
+        void writeTS(int x); //Total shots
+        void writeAC(int x); //Ammo count
+        void writeBS(int x); //Bullet speed
 
         NERF_Display() : Adafruit_SSD1306(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET) {
             // Using the constructor from Adafruit. Add more functionality here to initilise any member values.
