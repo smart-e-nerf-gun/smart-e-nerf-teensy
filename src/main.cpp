@@ -43,19 +43,9 @@ void setup() {
 
 void loop() {
 
+	delay(2000);
 	nerf_imu.updateImuData();
-
-	if ((lastPrint + PRINT_SPEED) < millis()) {
-		// Print the heading and orientation for fun!
-		// Call print attitude. The LSM9DS1's mag x and y
-		// axes are opposite to the accelerometer, so my, mx are
-		// substituted for each other.
-		nerf_imu.printAttitude(nerf_imu.ax, nerf_imu.ay, nerf_imu.az,
-					  -nerf_imu.my, -nerf_imu.mx, nerf_imu.mz);
-		Serial.println();
-
-		lastPrint = millis(); // Update lastPrint time
-	}
+	nerf_imu.printAttitude();
 
 	// nerf_imu.getGyro();
 	// nerf_imu.getAxl();

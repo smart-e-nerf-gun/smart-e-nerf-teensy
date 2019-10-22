@@ -12,8 +12,7 @@ void NERF_IMU::setupImu() {
 					   "work for an out of the box LSM9DS1 "
 					   "Breakout, but may need to be modified "
 					   "if the board jumpers are.");
-		while (1)
-			;
+		while (1);
 	}
 
 	Serial.println("Finished IMU set-up");
@@ -21,62 +20,37 @@ void NERF_IMU::setupImu() {
 
 void NERF_IMU::updateImuData() {
 
-	// Update the sensor values whenever new data is available
-	
-	if (nerf_imu.gyroAvailable()) {
-		nerf_imu.readGyro();
+	if (accelAvailable()) {
+		readAccel();
 	}
-	if (nerf_imu.accelAvailable()) {
-		nerf_imu.readAccel();
-	}
-	if (nerf_imu.magAvailable()) {
-		nerf_imu.readMag();
+	if (magAvailable()) {
+		readMag();
 	}
 }
 
-// void NERF_IMU::getGyro() {
-//     Serial.println("Getting gyro");
-// 	if (gyroAvailable()) {
-//         Serial.println("Gyro available");
-// 		readGyro();
-// 	}
-// }
+void NERF_IMU::printAttitude() {
 
-// void NERF_IMU::getAxl() {
-//     Serial.println("Getting axl");
-// 	if (accelAvailable()) {
-//         Serial.println("axl available");
-// 		readGyro();
-// 	}
-// }
-
-// void NERF_IMU::getMag() {
-//     Serial.println("Getting mag");
-// 	if (magAvailable()) {
-//         Serial.println("mag available");
-// 		readMag();
-// 	}
-// }
-
-void NERF_IMU::printAttitude(float ax, float ay, float az, float mx, float my, float mz) {
 	float roll = atan2(ay, az);
 	float pitch = atan2(-ax, sqrt(ay * ay + az * az));
 
 	float heading;
-	if (my == 0)
-		heading = (mx < 0) ? PI : 0;
-	else
-		heading = atan2(mx, my);
+	if (-my == 0) {
+		heading = (-mx < 0) ? PI : 0;
+	}
+	else {
+		heading = atan2(-mx, -my);
+	}
 
 	heading -= DECLINATION * PI / 180;
 
-	if (heading > PI)
+	if (heading > PI) {
 		heading -= (2 * PI);
-	else if (heading < -PI)
+	}
+	else if (heading < -PI) {
 		heading += (2 * PI);
+	}
 
-	// Convert everything from radians to degrees:
-	heading *= 180.0 / PI;
+	heading *= 180.0 / PI;		// Convert everything from radians to degrees:
 	pitch *= 180.0 / PI;
 	roll *= 180.0 / PI;
 
