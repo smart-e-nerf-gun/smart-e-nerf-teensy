@@ -33,7 +33,7 @@ class NERF_Display : public Adafruit_SSD1306 {
         void setupStaticText();
 
         void updateMF(int x); //Misfire
-        void updateUN(char un); //User name
+        void updateUN(char un[6]); //User name
         void updateTS(int x); //Total shots
         void updateAC(int x); //Ammo count
         void updateBS(int x); //Bullet speed
