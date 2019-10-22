@@ -7,13 +7,16 @@
 #define OPTIC_SENSOR_1_PIN 23
 #define OPTIC_SENSOR_2_PIN 3
 
+#define DOUBLE
+
+#ifdef SINGLE
+
 class NERF_Optics {
 
   public:
 	static bool read_first_sensor;
 	static volatile unsigned long time1;
 	static bool opt1_time; //Clock for the elapsed time
-	static volatile int misfires; //Misfire count
 
 	static void opt1Iqr();
 	static void opt2Iqr();
@@ -23,4 +26,21 @@ class NERF_Optics {
 	static void opt1Timer(); //Set timer and reset
 };
 
+#endif
+
+#ifdef DOUBLE
+
+class NERF_Optics {
+
+  public:
+	static volatile unsigned long time1;
+
+	static void opt1Iqr();
+	static void setupOptics();
+};
+
+#endif
+
+
 static NERF_Optics nerf_optics;
+

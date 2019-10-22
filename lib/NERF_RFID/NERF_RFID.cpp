@@ -108,17 +108,17 @@ bool NERF_RFID::authenticateUser() {
 bool NERF_RFID::authenticateMagazine() {
 	rfidRead();
 
-	Serial.print("uIDRead: ");
-	for (int i = 0; i < sizeof(uidRead); i++) {
-		Serial.print(uidRead[i]);
-	}
-	Serial.println();
+	// Serial.print("uIDRead: ");
+	// for (int i = 0; i < sizeof(uidRead); i++) {
+	// 	Serial.print(uidRead[i]);
+	// }
+	// Serial.println();
 
-	Serial.print("MagRead: ");
-	for (int i = 0; i < sizeof(mag_id); i++) {
-		Serial.print(mag_id[i]);
-	}
-	Serial.println();
+	// Serial.print("MagRead: ");
+	// for (int i = 0; i < sizeof(mag_id); i++) {
+	// 	Serial.print(mag_id[i]);
+	// }
+	// Serial.println();
 	
 
 	

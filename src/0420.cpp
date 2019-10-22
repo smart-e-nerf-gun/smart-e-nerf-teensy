@@ -12,8 +12,11 @@
 #define BARREL_DISTANCE 0.123
 
 char name[7];
-unsigned int shotcount;
+volatile unsigned int shotcount = 0;
+volatile unsigned int shots_fired = 0;
+volatile unsigned int misfire = 0;
 volatile unsigned long duration = 0;
+
 char imu_msg[3] = {'D', 'I', '0'};
 
 state current_state = UN_AUTH;
@@ -126,12 +129,21 @@ void loop() {
 
 	if ((current_state != UN_AUTH) && (current_state != AUTH) && (current_state != READ_MAG)) {
 		nerf_display.updateAC(shotcount, false);
-		double speed = (BARREL_DISTANCE / (duration / 1000000));
-		Serial.println(speed);
-		nerf_display.updateBS(speed); // Calc and display speed
+		nerf_display.updateTS(shots_fired);
+		nerf_display.updateMF(misfire);
+		// double speed = ( (duration / 1000000));
+		if (duration != 0) {
+			double speed = ( (double) 0.123f / (duration / (double) 1000000));
+			// Serial.println(speed);
+			nerf_display.updateBS(speed);
+		}
+		
+		//nerf_display.updateBS(speed); // Calc and display speed
+		
+		
 	}
 
 	current_state = next_state;
 
-	delay(1000); // remove
+	delay(600); // remove
 }
