@@ -31,16 +31,13 @@ bool NERF_RFID::rfidAuthenticate(bool rfid_type) {
 			Serial.println("Got a valid response.");
 			shotcount = content.substring(1).toInt();
 			return true;
-			
+
 		} else {
 			delay(1000);
 			return false;
 		}
 
-	} 
-	
-	
-	else {
+	} else {
 		payload[1] = 'U'; // Request user
 
 		for (int i = offset; i < (4 + offset); i++) {
@@ -58,12 +55,6 @@ bool NERF_RFID::rfidAuthenticate(bool rfid_type) {
 			return false;
 		}
 	}
-
-	// for (int i = 0; i < sizeof(payload); i++) {
-	// 	Serial.print(payload[i]);
-	// 	Serial.print(' ');
-	// }
-	// Serial.println();
 }
 
 void NERF_RFID::rfidRead() { // Read and saves uid from tag to uidRead.
@@ -122,8 +113,6 @@ bool NERF_RFID::authenticateMagazine() {
 			Serial.println();
 
 			memcpy(mag_id, uidRead, sizeof(uidRead));
-			// mag_id = uidRead;
-
 			return true;
 
 		} else {

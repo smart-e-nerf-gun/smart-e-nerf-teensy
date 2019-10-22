@@ -11,10 +11,6 @@ bool NERF_Optics::read_first_sensor = false;
  */
 volatile unsigned long NERF_Optics::time1 = 0;
 
-/**
- * Volative long to store the time taken for the bulet to pass from first to second optical sensor.
- */
-volatile unsigned long NERF_Optics::duration = 0;
 
 /**
  * When the bulet passes the first optical sensor, this function will be called.
@@ -50,19 +46,17 @@ void NERF_Optics::opt1Iqr() {
 void NERF_Optics::opt2Iqr() {
 
     if (read_first_sensor) {
-        Serial.println("Fire!");
-
+        
         --shotcount;
-        Serial.println(shotcount);
         duration = micros() - time1;
         read_first_sensor = false;
-        // Serial.println(duration);
 
-        char buffer [sizeof(long)*8+1] = {'*'};
-
-        ltoa (duration,buffer, DEC);
-        // nerf_xbee.sendPayload((uint8_t *) buffer, sizeof(buffer));
-        // nerf_display.updateNameAndRemainingBulets();
+        char buffer [sizeof(long)*8+1 + 1] = {'*'};
+        ltoa (duration,buffer + 1, DEC);
+        buffer[0] = 'D';
+        Serial.println(duration);
+        Serial.println(buffer);
+        nerf_xbee.sendPayload((uint8_t *) buffer, sizeof(buffer));
     }
     
     return;

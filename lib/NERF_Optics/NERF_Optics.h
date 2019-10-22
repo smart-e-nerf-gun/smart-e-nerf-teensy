@@ -11,7 +11,7 @@ class NERF_Optics {
 
   public:
 	static bool read_first_sensor;
-	static volatile unsigned long time1, duration;
+	static volatile unsigned long time1;
 
 	static void opt1Iqr();
 	static void opt2Iqr();

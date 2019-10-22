@@ -13,6 +13,7 @@
 
 char name[6];
 unsigned int shotcount;
+volatile unsigned long duration = 0;
 
 state current_state = UN_AUTH;
 state next_state = UN_AUTH;
@@ -78,6 +79,7 @@ void loop() {
 			if (nerf_rfid.authenticateMagazine()) {
 				Serial.println("updateAC()");
 				nerf_display.updateAC(shotcount);
+				nerf_optics.setupOptics();
 				next_state = READ_GPS;
 			}
 			else {
@@ -93,8 +95,11 @@ void loop() {
 			break;
 
 		case READ_IMU:
+			if (shotcount == 0) {
+				next_state = READ_MAG;
+			}
 
-			// next_state = READ_MAG;
+			next_state = READ_IMU;
 
 			break;
 
@@ -106,7 +111,13 @@ void loop() {
 			next_state = UN_AUTH;
 	}
 
+	current_state = next_state;
+
+
+
+	if ((current_state != UN_AUTH) && (current_state != AUTH) && (current_state != READ_MAG)) {
+		nerf_display.updateAC(shotcount);
+	}
 	delay(1000); // remove
 
-	current_state = next_state;
 }
