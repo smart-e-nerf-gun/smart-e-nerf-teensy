@@ -38,7 +38,6 @@ void setup() {
 	// #ifdef DEBUG
 	// Serial.println("Finished debug");
 	// #endif
-
 }
 
 void loop() {
@@ -70,8 +69,6 @@ void loop() {
 			nerf_display.updateUN(name);
 			nerf_display.updateAC(0, true);
 
-			Serial.println("setupStaticText() done");
-
 			next_state = READ_MAG;
 
 			break;
@@ -81,10 +78,10 @@ void loop() {
 			nerf_display.updateAC(0, true);
 
 			if (nerf_rfid.authenticateMagazine()) {
-				
+
 				nerf_imu.setupImu();
 				nerf_optics.setupOptics();
-				
+
 				next_state = READ_GPS;
 			} else {
 				nerf_display.invert_display();
@@ -100,19 +97,18 @@ void loop() {
 
 		case READ_IMU:
 			if (shotcount == 0) {
-				// Serial.println("Shot count is zero!");
 				next_state = READ_MAG;
-				// Serial.print("Set next state to: ");
-				// Serial.println(next_state);
+
 			} else {
-				
+
+				nerf_imu.updateImuData();
 				if (nerf_imu.isAimed()) {
 					imu_msg[2] = '1';
 				} else {
 					imu_msg[2] = '0';
 				}
 
-				nerf_xbee.sendPayload((uint8_t *) imu_msg, sizeof(imu_msg));				
+				nerf_xbee.sendPayload((uint8_t *)imu_msg, sizeof(imu_msg));
 				next_state = READ_GPS;
 
 				delay(100);
@@ -130,14 +126,12 @@ void loop() {
 
 	if ((current_state != UN_AUTH) && (current_state != AUTH) && (current_state != READ_MAG)) {
 		nerf_display.updateAC(shotcount, false);
-		nerf_display.updateBS(1.99);
-		//nerf_display.updateBS((BARREL_DISTANCE/(duration/1000000)));	// Calc and display speed
+		double speed = (BARREL_DISTANCE / (duration / 1000000));
+		Serial.println(speed);
+		nerf_display.updateBS(speed); // Calc and display speed
 	}
 
 	current_state = next_state;
-
-	// Serial.print("Shotcount: ");
-	// Serial.println(shotcount);
 
 	delay(1000); // remove
 }
