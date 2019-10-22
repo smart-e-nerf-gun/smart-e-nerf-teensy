@@ -427,7 +427,7 @@ void NERF_Display::updateBS(double BS)
 	setTextSize(1);
 
 	char fract_buff[2];
-	sprintf(fract_buff, "%2.0f", fractpart);
+	sprintf(fract_buff, "%0.2f", fractpart);
 
 	setTextColor(BLACK); // set text color to black
 	setCursor(bulletcursor[0], bulletcursor[1]);
@@ -438,17 +438,18 @@ void NERF_Display::updateBS(double BS)
 	write(219); //make sure previous value is cleared by overwriting it with black pixels
 
 	setTextColor(WHITE);
-	setCursor(bulletcursor[0] + 18, bulletcursor[1]);
+	setCursor(bulletcursor[0] + 6, bulletcursor[1]);
+	Serial.print(fract_buff);
 	print(fract_buff);
 	//Serial.println(intpart);
 	//Serial.print(fractpart);
 
-	// setCursor(bulletcursor[0], bulletcursor[1]);
-	// setTextColor(BLACK);
-	// write(219);
-	// write(219);
+	setCursor(bulletcursor[0], bulletcursor[1]);
+	setTextColor(BLACK);
+	write(219);
+	write(219);
 
-	//setTextColor(WHITE);
+	setTextColor(WHITE);
 	if (intpart < 10)
 	{
 		setCursor(bulletcursor[0] + 6, bulletcursor[1]);
