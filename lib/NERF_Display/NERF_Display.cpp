@@ -418,34 +418,27 @@ void NERF_Display::updateTS(int TS) { //update total shot count
 	display();
 }
 
-void NERF_Display::updateBS(double BS) { //update bullet speed
+void NERF_Display::updateBS(double BS)
+{ //update bullet speed
 	double BS_buffer = BS;
 	double intpart;
 	double fractpart;
-	fractpart=modf(BS_buffer,&intpart);
+	fractpart = modf(BS_buffer, &intpart);
 	setTextSize(1);
 
 	setTextColor(BLACK); // set text color to black
 	setCursor(bulletcursor[0], bulletcursor[1]);
 	write(219);
 	write(219);
-	write(0); 
+	write(0);
 	write(219);
-	write(219);//make sure previous value is cleared by overwriting it with black pixels
-
-	///setTextColor(WHITE); // set text color to white
-	// if (BS_buffer < 10) {
-	// 	setCursor(bulletcursor[0] + 6, bulletcursor[1]);
-	// } else {
-	// 	setCursor(bulletcursor[0], bulletcursor[1]);
-	// }
-	
+	write(219); //make sure previous value is cleared by overwriting it with black pixels
 
 	setTextColor(WHITE);
-	setCursor(bulletcursor[0]+6, bulletcursor[1]);
+	setCursor(bulletcursor[0] + 6, bulletcursor[1]);
 	print(fractpart);
-	Serial.println(intpart);
-	Serial.print(fractpart);
+	//Serial.println(intpart);
+	//Serial.print(fractpart);
 
 	setCursor(bulletcursor[0], bulletcursor[1]);
 	setTextColor(BLACK);
@@ -453,8 +446,15 @@ void NERF_Display::updateBS(double BS) { //update bullet speed
 	write(219);
 
 	setTextColor(WHITE);
-	setCursor(bulletcursor[0], bulletcursor[1]);
+	if (intpart < 10)
+	{
+		setCursor(bulletcursor[0] + 6, bulletcursor[1]);
+	}
+	else
+	{
+		setCursor(bulletcursor[0], bulletcursor[1]);
+	}
 	print(int(intpart));
 
 	display();
-}
+}	
