@@ -43,25 +43,9 @@ void setup() {
 
 void loop() {
 
-	delay(2000);
-	nerf_imu.updateImuData();
-	nerf_imu.printAttitude();
-
-	// nerf_imu.getGyro();
-	// nerf_imu.getAxl();
-	// nerf_imu.getMag();
-	// nerf_imu.printAttitude(nerf_imu.ax, nerf_imu.ay, nerf_imu.az,
-	// 					   -nerf_imu.my, -nerf_imu.mx, -nerf_imu.mz);
-
-	// if ((lastPrint + PRINT_SPEED) < millis()) {
-	// 	nerf_imu.printAttitude(nerf_imu.ax, nerf_imu.ay, nerf_imu.az,
-	// 						   -nerf_imu.my, -nerf_imu.mx, -nerf_imu.mz);
-	// 	lastPrint = millis(); // Update lastPrint time
-	// }
-
 	// ardprintf("Current state: %d \n", current_state);
 
-	// nerf_display.writeMF(random(0, 1000));
+	nerf_display.writeMF(random(0, 1000));
 
 	// switch (current_state) {
 
