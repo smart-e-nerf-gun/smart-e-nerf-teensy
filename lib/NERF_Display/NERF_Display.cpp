@@ -439,7 +439,7 @@ void NERF_Display::updateBS(double BS)
 
 	setTextColor(WHITE);
 	setCursor(bulletcursor[0] + 6, bulletcursor[1]);
-	Serial.print(fract_buff);
+	//Serial.print(fract_buff);
 	print(fract_buff);
 	//Serial.println(intpart);
 	//Serial.print(fractpart);
