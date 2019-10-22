@@ -19,7 +19,7 @@ class NERF_IMU: public LSM9DS1 {
 
         void setupImu();
         void updateImuData();
-        void printAttitude();
+        bool isAimed();
 };
 
 static NERF_IMU nerf_imu;
