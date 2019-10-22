@@ -14,8 +14,6 @@ unsigned int shotcount;
 state current_state = UN_AUTH;
 state next_state = UN_AUTH;
 uint8_t mag_id[4] = {0, 0, 0, 0};
-const char mf_label[8] = {'m', 'i', 's', 'f', 'i', 'r', 'e', 's'};
-const char clear_mf[12] = {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}; //12 spaces "_ _ _ _ m i s f i r e s"
 
 void setup() {
 
@@ -38,8 +36,12 @@ void setup() {
 void loop() {
 
 	// ardprintf("Current state: %d \n", current_state);
-
-	nerf_display.writeMF(random(0, 1000));
+	nerf_display.setupStaticText();
+	nerf_display.updateMF(random(0,1000));
+	nerf_display.updateAC(random(0,100));
+	nerf_display.updateTS(random(0,1000));
+	nerf_display.updateBS(random(0,100));
+	//nerf_display.writeMF(random(0, 1000));
 
 	// switch (current_state) {
 
