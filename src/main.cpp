@@ -130,7 +130,8 @@ void loop() {
 
 	if ((current_state != UN_AUTH) && (current_state != AUTH) && (current_state != READ_MAG)) {
 		nerf_display.updateAC(shotcount, false);
-		nerf_display.updateBS((BARREL_DISTANCE/(duration/1000000)));	// Calc and display speed
+		nerf_display.updateBS(1.99);
+		//nerf_display.updateBS((BARREL_DISTANCE/(duration/1000000)));	// Calc and display speed
 	}
 
 	current_state = next_state;

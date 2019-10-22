@@ -109,7 +109,7 @@ void NERF_Display::display_auth() {
 }
 
 void NERF_Display::setupStaticText() {
-	//clearDisplay(); //make sure the authorisation image is cleared
+	clearDisplay(); //make sure the authorisation image is cleared
 	cp437(true);
 	//misfire setup text
 	setCursor(misfirecursor[0], misfirecursor[1]);
@@ -426,6 +426,9 @@ void NERF_Display::updateBS(double BS)
 	fractpart = modf(BS_buffer, &intpart);
 	setTextSize(1);
 
+	char fract_buff[2];
+	sprintf(fract_buff, "%2.0f", fractpart);
+
 	setTextColor(BLACK); // set text color to black
 	setCursor(bulletcursor[0], bulletcursor[1]);
 	write(219);
@@ -435,17 +438,17 @@ void NERF_Display::updateBS(double BS)
 	write(219); //make sure previous value is cleared by overwriting it with black pixels
 
 	setTextColor(WHITE);
-	setCursor(bulletcursor[0] + 6, bulletcursor[1]);
-	print(fractpart);
+	setCursor(bulletcursor[0] + 18, bulletcursor[1]);
+	print(fract_buff);
 	//Serial.println(intpart);
 	//Serial.print(fractpart);
 
-	setCursor(bulletcursor[0], bulletcursor[1]);
-	setTextColor(BLACK);
-	write(219);
-	write(219);
+	// setCursor(bulletcursor[0], bulletcursor[1]);
+	// setTextColor(BLACK);
+	// write(219);
+	// write(219);
 
-	setTextColor(WHITE);
+	//setTextColor(WHITE);
 	if (intpart < 10)
 	{
 		setCursor(bulletcursor[0] + 6, bulletcursor[1]);
