@@ -109,7 +109,7 @@ void NERF_Display::display_auth() {
 }
 
 void NERF_Display::setupStaticText() {
-	clearDisplay();
+	//clearDisplay(); //make sure the authorisation image is cleared
 	cp437(true);
 	//misfire setup text
 	setCursor(misfirecursor[0], misfirecursor[1]);
@@ -139,6 +139,8 @@ void NERF_Display::setupStaticText() {
 	//bullet speed setup text
 	setCursor(bulletcursor[0], bulletcursor[1]);
 	write(0);
+	write(0);
+	write(46);
 	write(0);
 	write(0);
 	write(109);
@@ -416,23 +418,43 @@ void NERF_Display::updateTS(int TS) { //update total shot count
 	display();
 }
 
-void NERF_Display::updateBS(int BS) { //update bullet speed
-	unsigned int BS_buffer = BS;
+void NERF_Display::updateBS(double BS) { //update bullet speed
+	double BS_buffer = BS;
+	double intpart;
+	double fractpart;
+	fractpart=modf(BS_buffer,&intpart);
 	setTextSize(1);
 
 	setTextColor(BLACK); // set text color to black
 	setCursor(bulletcursor[0], bulletcursor[1]);
 	write(219);
 	write(219);
-	write(219); //make sure previous value is cleared by overwriting it with black pixels
+	write(0); 
+	write(219);
+	write(219);//make sure previous value is cleared by overwriting it with black pixels
 
-	setTextColor(WHITE); // set text color to white
-	if (BS_buffer < 10) {
-		setCursor(bulletcursor[0] + 6, bulletcursor[1]);
-	} else {
-		setCursor(bulletcursor[0], bulletcursor[1]);
-	}
-	print(BS_buffer);
+	///setTextColor(WHITE); // set text color to white
+	// if (BS_buffer < 10) {
+	// 	setCursor(bulletcursor[0] + 6, bulletcursor[1]);
+	// } else {
+	// 	setCursor(bulletcursor[0], bulletcursor[1]);
+	// }
+	
+
+	setTextColor(WHITE);
+	setCursor(bulletcursor[0]+6, bulletcursor[1]);
+	print(fractpart);
+	Serial.println(intpart);
+	Serial.print(fractpart);
+
+	setCursor(bulletcursor[0], bulletcursor[1]);
+	setTextColor(BLACK);
+	write(219);
+	write(219);
+
+	setTextColor(WHITE);
+	setCursor(bulletcursor[0], bulletcursor[1]);
+	print(int(intpart));
 
 	display();
 }

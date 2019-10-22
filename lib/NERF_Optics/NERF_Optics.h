@@ -12,10 +12,15 @@ class NERF_Optics {
   public:
 	static bool read_first_sensor;
 	static volatile unsigned long time1;
+	static bool opt1_time; //Clock for the elapsed time
+	static volatile int misfires; //Misfire count
 
 	static void opt1Iqr();
 	static void opt2Iqr();
+	static void timerInt();
 	static void setupOptics();
+
+	static void opt1Timer(); //Set timer and reset
 };
 
 static NERF_Optics nerf_optics;
