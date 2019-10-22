@@ -21,7 +21,7 @@ class NERF_Display : public Adafruit_SSD1306 {
         //cursors are determined base on pixel width of 6, and height of 8
         const int misfirecursor[2]={0,57}; //cursor x,y for misfire
         const int shotcursor[2]={75,0}; //cursor x,y for shot count
-        const int bulletcursor[2]={93,57}; //cursor x,y for bullet speed
+        const int bulletcursor[2]={81,57}; //cursor x,y for bullet speed
         const int usercursor[2]={0,0};//cursor x,y for username
         const int ammocursor[2]={43,18};//cursor x,y for ammo count
 
@@ -36,7 +36,7 @@ class NERF_Display : public Adafruit_SSD1306 {
         void updateUN(char un[6]); //User name
         void updateTS(int x); //Total shots
         void updateAC(int x, bool y); //Ammo count
-        void updateBS(int x); //Bullet speed
+        void updateBS(double x); //Bullet speed
 
         NERF_Display() : Adafruit_SSD1306(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET) {
             // Using the constructor from Adafruit. Add more functionality here to initilise any member values.
