@@ -359,9 +359,17 @@ void NERF_Display::updateAC(int AC)
 	setTextColor(BLACK); // set text color to black
 	setCursor(ammocursor[0], ammocursor[1]);
 	write(219);	write(219);
-
+	setCursor(ammocursor[0]+12, ammocursor[1]);
+	write(219);	write(219);
+	
 	setTextColor(WHITE);
-	setCursor(ammocursor[0], ammocursor[1]);
+	if (AC_buffer<10){
+		setCursor(ammocursor[0]+12,ammocursor[1]);
+	}
+	else
+	{
+		setCursor(ammocursor[0],ammocursor[1]);
+	}
 	print(AC_buffer);
 }
 
@@ -391,7 +399,17 @@ void NERF_Display::updateTS(int TS)
 	write(219);	write(219);	write(219);	write(219); //make sure previous value is cleared by overwriting it with black pixels
 
 	setTextColor(WHITE); // set text color to white
-	setCursor(shotcursor[0], shotcursor[1]);
+	if (TS_buffer<10){
+		setCursor(shotcursor[0]+12,shotcursor[1]);
+	}
+	else if (TS_buffer<100 && TS_buffer>=10)
+	{
+		setCursor(shotcursor[0]+6,shotcursor[1]);
+	}
+	else
+	{
+		setCursor(shotcursor[0], shotcursor[1]);
+	}	
 	print(TS_buffer);
 
 	display();
