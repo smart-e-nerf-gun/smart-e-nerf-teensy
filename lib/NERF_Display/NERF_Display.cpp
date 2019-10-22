@@ -108,42 +108,23 @@ void NERF_Display::display_auth() {
 	// delay(1000);
 }
 
-void NERF_Display::writeMF(int x){
-	// //Take MF char, send it to the screen
-	// char mf[4]; //4char, max value 9999
-	// ltoa((long) x, mf, 10);
-	// sprintf(mf, "%d", x);
-	
-
-	// //Serial.println(mf);
-	// //Serial.println(mf_label);
-
-	// setTextSize(0); //Set text size to 0 to prevent conflict with FONT
-	// //setFont(&FreeMonoBold24pt7b); //,Y Cursor on Y axis would shift 4px down for baseline in 9pt font
-	// println(clear_mf); //Clear 12 spaces for the new data 
-	// setCursor(0, 0); //Reset cursor placement
-	// println(mf); //Print the data
-	// //println(mf_label);
-	// display();
-}
-
 void NERF_Display::setupStaticText(){
-	//missfire setup test
-	setCursor(0,57);
-  write(0);write(0);write(0);write(0);write(109);write(105);write(115);write(115);//write "miss" in screen strting with blank space
-}
+	cp437(true);
+	//misfire setup text
+	setCursor(misfirecursor[0],misfirecursor[1]);
+	write(0);write(0);write(0);write(0);write(109);write(105);write(115);write(115);//write "miss" in screen strting with blank space for number
+	display();
 
-void NERF_Display::test(int count){
-  //char name_buffer=name;
-  unsigned int count_buffer=count;
-  cp437(true);
-  clearDisplay();
-  setTextColor(WHITE); // Draw white text
-  
-  setCursor(0,57);
-  print(count_buffer);
-  display();
-  //Serial.print(mf_label);
+	//shot count setup text
+	setCursor(shotcursor[0],shotcursor[1]);
+	write(0);write(0);write(0);write(0);write(115);write(104);write(111);write(116);write(115);//write "shots" in screen strting with blank space for number
+	display();
+
+	//bullet speed setup text
+	setCursor(bulletcursor[0],bulletcursor[1]);
+	write(0);write(0);write(0);write(109);write(47);write(115);//write "m/s" in screen strting with blank space for number
+	display();
+
 }
 
 void NERF_Display::invert_display(){
@@ -152,4 +133,64 @@ void NERF_Display::invert_display(){
   invertDisplay(false);
   delay(250);
 }
+
+void NERF_Display::updateAC(int AC){
+	unsigned int AC_buffer=AC;
+	setTextSize(4);
+
+	setTextColor(BLACK); // set text color to black
+  	setCursor(ammocursor[0],ammocursor[1]);
+  	write(219);write(219);
+
+	setTextColor(WHITE);
+	setCursor(ammocursor[0],ammocursor[1]);
+	print(AC_buffer);
+}
+
+void NERF_Display::updateMF(int MF){
+  unsigned int MF_buffer=MF;
+  setTextSize(1);
+
+  setTextColor(BLACK); // set text color to black
+  setCursor(misfirecursor[0],misfirecursor[1]);
+  write(219);write(219);write(219);write(219); //make sure previous value is cleared by overwriting it with black pixels
+
+  setTextColor(WHITE); // set text color to white
+  setCursor(misfirecursor[0],misfirecursor[1]);
+  print(MF_buffer);
+  
+  display();
+}
+
+void NERF_Display::updateTS(int TS){
+  unsigned int TS_buffer=TS;
+  setTextSize(1);
+
+  setTextColor(BLACK); // set text color to black
+  setCursor(shotcursor[0],shotcursor[1]);
+  write(219);write(219);write(219);write(219); //make sure previous value is cleared by overwriting it with black pixels
+
+  setTextColor(WHITE); // set text color to white
+  setCursor(shotcursor[0],shotcursor[1]);
+  print(TS_buffer);
+  
+  display();
+}
+
+void NERF_Display::updateBS(int BS){
+  unsigned int BS_buffer=BS;
+  setTextSize(1);
+
+  setTextColor(BLACK); // set text color to black
+  setCursor(bulletcursor[0],bulletcursor[1]);
+  write(219);write(219);write(219); //make sure previous value is cleared by overwriting it with black pixels
+
+  setTextColor(WHITE); // set text color to white
+  setCursor(bulletcursor[0],bulletcursor[1]);
+  print(BS_buffer);
+  
+  display();
+}
+
+
 
