@@ -3,10 +3,13 @@
 #include <NERF.h>
 #include <NERF_Display.h>
 #include <NERF_GPS.h>
+#include <NERF_IMU.h>
 #include <NERF_Optics.h>
 #include <NERF_RFID.h>
 #include <NERF_XBee.h>
 #include <ardprintf.h>
+
+#define PRINT_SPEED 1000 // 250 ms between prints
 
 char name[6];
 unsigned int shotcount;
@@ -14,6 +17,8 @@ unsigned int shotcount;
 state current_state = UN_AUTH;
 state next_state = UN_AUTH;
 uint8_t mag_id[4] = {0, 0, 0, 0};
+
+static unsigned long lastPrint = 0; // Keep track of print time
 
 void setup() {
 
@@ -24,13 +29,14 @@ void setup() {
 	// Serial.println("In setup");
 	// #endif
 
-	nerf_xbee.setUpXbee();
-	nerf_rfid.rfidSetup();
-	nerf_display.setupDisplay();
+	// nerf_xbee.setUpXbee();
+	// nerf_rfid.rfidSetup();
+	// nerf_display.setupDisplay();
 
 	// #ifdef DEBUG
 	// Serial.println("Finished debug");
 	// #endif
+	nerf_imu.setupImu();
 }
 
 void loop() {
@@ -86,7 +92,4 @@ void loop() {
 	// }
 
 	// current_state = next_state;
-
-	delay(1000);
-	
 }
