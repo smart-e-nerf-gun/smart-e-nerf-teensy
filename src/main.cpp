@@ -9,11 +9,12 @@
 #include <NERF_XBee.h>
 #include <ardprintf.h>
 
-#define PRINT_SPEED 1000 // 250 ms between prints
+#define BARREL_DISTANCE 0.123
 
-char name[6];
+char name[7];
 unsigned int shotcount;
 volatile unsigned long duration = 0;
+char imu_msg[3] = {'D', 'I', '0'};
 
 state current_state = UN_AUTH;
 state next_state = UN_AUTH;
@@ -38,7 +39,6 @@ void setup() {
 	// Serial.println("Finished debug");
 	// #endif
 
-	nerf_imu.setupImu();
 }
 
 void loop() {
@@ -82,7 +82,9 @@ void loop() {
 
 			if (nerf_rfid.authenticateMagazine()) {
 				
+				nerf_imu.setupImu();
 				nerf_optics.setupOptics();
+				
 				next_state = READ_GPS;
 			} else {
 				nerf_display.invert_display();
@@ -98,13 +100,22 @@ void loop() {
 
 		case READ_IMU:
 			if (shotcount == 0) {
-				Serial.println("Shot count is zero!");
+				// Serial.println("Shot count is zero!");
 				next_state = READ_MAG;
-				Serial.print("Set next state to: ");
-				Serial.println(next_state);
+				// Serial.print("Set next state to: ");
+				// Serial.println(next_state);
 			} else {
+				
+				if (nerf_imu.isAimed()) {
+					imu_msg[2] = '1';
+				} else {
+					imu_msg[2] = '0';
+				}
 
+				nerf_xbee.sendPayload((uint8_t *) imu_msg, sizeof(imu_msg));				
 				next_state = READ_GPS;
+
+				delay(100);
 			}
 
 			break;
@@ -119,13 +130,13 @@ void loop() {
 
 	if ((current_state != UN_AUTH) && (current_state != AUTH) && (current_state != READ_MAG)) {
 		nerf_display.updateAC(shotcount, false);
-		nerf_display.updateBS(duration);
+		nerf_display.updateBS((BARREL_DISTANCE/(duration/1000000)));	// Calc and display speed
 	}
 
 	current_state = next_state;
 
-	Serial.print("Shotcount: ");
-	Serial.println(shotcount);
+	// Serial.print("Shotcount: ");
+	// Serial.println(shotcount);
 
 	delay(1000); // remove
 }

@@ -51,9 +51,10 @@ void NERF_Optics::opt2Iqr() {
         duration = micros() - time1;
         read_first_sensor = false;
 
-        char buffer [sizeof(long)*8+1 + 1] = {'*'};
+        char buffer [sizeof(long)*8+1 + 2] = {'*'};
         ltoa (duration,buffer + 1, DEC);
         buffer[0] = 'D';
+        buffer[1] = 'B';
         Serial.println(duration);
         Serial.println(buffer);
         nerf_xbee.sendPayload((uint8_t *) buffer, sizeof(buffer));

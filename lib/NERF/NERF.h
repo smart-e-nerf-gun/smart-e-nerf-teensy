@@ -13,7 +13,7 @@ enum state {	// This is the states for the main state machine
 	ERROR
 };
 
-extern char name[6];
+extern char name[7];
 extern unsigned int shotcount;
 
 extern uint8_t mag_id[4];

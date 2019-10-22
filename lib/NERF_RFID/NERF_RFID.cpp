@@ -49,7 +49,8 @@ bool NERF_RFID::rfidAuthenticate(bool rfid_type) {
 		Serial.println(content);
 
 		if (content[0] == '1') {
-			content.substring(1, 6).toCharArray(name, 6);
+			Serial.println(content.substring(1));
+			content.substring(1).toCharArray(name, 7);
 			return true;
 		} else {
 			return false;
