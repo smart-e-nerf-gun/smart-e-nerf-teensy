@@ -15,7 +15,9 @@ enum state {	// This is the states for the main state machine
 
 extern char name[6];
 extern unsigned int shotcount;
+
 extern uint8_t mag_id[4];
+
 const extern char mf_label[8];
 const extern char clear_mf[12];
 

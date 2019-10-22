@@ -8,40 +8,62 @@ void NERF_RFID::rfidSetup() {
 bool NERF_RFID::rfidAuthenticate(bool rfid_type) {
 
 	String content = "";
+	const short offset = 2;
 
 	uint8_t payload[6];
 	payload[0] = 'R'; // Sending request
 
 	if (rfid_type) {
 		payload[1] = 'M'; // Request mag
-	} else {
+
+		for (int i = offset; i < (4 + offset); i++) {
+			payload[i] = uidRead[i - offset];
+		}
+		nerf_xbee.sendPayload(payload, sizeof(payload));
+		content = nerf_xbee.receivePayload(2000);
+
+		Serial.print("Response: ");
+		Serial.println(content);
+
+		// return false;
+
+		if (content[0] == 'r') {
+			Serial.println("Got a valid response.");
+			shotcount = content.substring(1).toInt();
+			return true;
+			
+		} else {
+			delay(1000);
+			return false;
+		}
+
+	} 
+	
+	
+	else {
 		payload[1] = 'U'; // Request user
+
+		for (int i = offset; i < (4 + offset); i++) {
+			payload[i] = uidRead[i - offset];
+		}
+		nerf_xbee.sendPayload(payload, sizeof(payload));
+		content = nerf_xbee.receivePayload(2000);
+
+		Serial.println(content);
+
+		if (content[0] == '1') {
+			content.substring(1, 6).toCharArray(name, 6);
+			return true;
+		} else {
+			return false;
+		}
 	}
 
-	short offset = 2;
-
-	for (int i = offset; i < (4 + offset); i++) {
-		payload[i] = uidRead[i - offset];
-	}
-
-	for (int i = 0; i < sizeof(payload); i++) {
-		Serial.print(payload[i]);
-		Serial.print(' ');
-	}
-	Serial.println();
-
-	nerf_xbee.sendPayload(payload, sizeof(payload));
-	content = nerf_xbee.receivePayload(2000);
-
-	Serial.println(content);
-
-	if (content[0] == '1') {
-		content.substring(1, 6).toCharArray(name, 6);
-		return true;
-	} else {
-		return false;
-	}
-
+	// for (int i = 0; i < sizeof(payload); i++) {
+	// 	Serial.print(payload[i]);
+	// 	Serial.print(' ');
+	// }
+	// Serial.println();
 }
 
 void NERF_RFID::rfidRead() { // Read and saves uid from tag to uidRead.
@@ -93,12 +115,20 @@ bool NERF_RFID::authenticateUser() {
 
 bool NERF_RFID::authenticateMagazine() {
 	rfidRead();
-	if (rfidAuthenticate(true)) { // true for magazine
-		Serial.println("Valid Magazine");
-		Serial.println();
-		return true;
-	} else {
-		Serial.println("Invalid Magazine");
-		return false;
+	if (uidRead != mag_id) {
+
+		if (rfidAuthenticate(true)) { // true for magazine
+			Serial.println("Valid Magazine");
+			Serial.println();
+
+			memcpy(mag_id, uidRead, sizeof(uidRead));
+			// mag_id = uidRead;
+
+			return true;
+
+		} else {
+			Serial.println("Invalid Magazine");
+			return false;
+		}
 	}
 }

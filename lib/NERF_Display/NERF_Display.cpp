@@ -109,6 +109,7 @@ void NERF_Display::display_auth() {
 }
 
 void NERF_Display::setupStaticText(){
+	clearDisplay();
 	cp437(true);
 	//misfire setup text
 	setCursor(misfirecursor[0],misfirecursor[1]);
@@ -135,6 +136,7 @@ void NERF_Display::invert_display(){
 }
 
 void NERF_Display::updateAC(int AC){
+	Serial.println("in updateAC()");
 	unsigned int AC_buffer=AC;
 	setTextSize(4);
 
@@ -145,6 +147,8 @@ void NERF_Display::updateAC(int AC){
 	setTextColor(WHITE);
 	setCursor(ammocursor[0],ammocursor[1]);
 	print(AC_buffer);
+	display();
+	Serial.println("end updateAC()");
 }
 
 void NERF_Display::updateMF(int MF){

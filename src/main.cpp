@@ -29,67 +29,84 @@ void setup() {
 	// Serial.println("In setup");
 	// #endif
 
-	// nerf_xbee.setUpXbee();
-	// nerf_rfid.rfidSetup();
-	// nerf_display.setupDisplay();
+	nerf_xbee.setUpXbee();
+	nerf_rfid.rfidSetup();
+	nerf_display.setupDisplay();
 
 	// #ifdef DEBUG
 	// Serial.println("Finished debug");
 	// #endif
+
 	nerf_imu.setupImu();
 }
 
 void loop() {
 
-	// ardprintf("Current state: %d \n", current_state);
-	nerf_display.setupStaticText();
-	nerf_display.updateMF(random(0,1000));
-	nerf_display.updateAC(random(0,100));
-	nerf_display.updateTS(random(0,1000));
-	nerf_display.updateBS(random(0,100));
-	//nerf_display.writeMF(random(0, 1000));
+	ardprintf("Current state: %d \n", current_state);
 
-	// switch (current_state) {
+	switch (current_state) {
 
-	// 	case UN_AUTH:
+		case UN_AUTH:
 
-	// 		if (nerf_rfid.authenticateUser()) {
-	// 			next_state = AUTH;
-	// 		} else {
-	// 			next_state = UN_AUTH;
-	// 		}
+			nerf_display.display_unauth();
 
-	// 		break;
+			if (nerf_rfid.authenticateUser()) {
+				next_state = AUTH;
+			} else {
+				nerf_display.invert_display();
+				next_state = UN_AUTH;
+			}
 
-	// 	case AUTH:
+			break;
 
-	// 		next_state = READ_MAG;
+		case AUTH:
 
-	// 		break;
+			nerf_display.display_auth();
+			delay(500);
 
-	// 	case READ_MAG:
+			nerf_display.setupStaticText();
+			// display the user anme here
 
-	// 		next_state = READ_GPS;
-	// 		break;
+			Serial.println("setupStaticText() done");
 
-	// 	case READ_GPS:
+			next_state = READ_MAG;
 
-	// 		next_state = READ_IMU;
-	// 		break;
+			break;
 
-	// 	case READ_IMU:
+		case READ_MAG:
 
-	// 		next_state = READ_MAG;
+			if (nerf_rfid.authenticateMagazine()) {
+				Serial.println("updateAC()");
+				nerf_display.updateAC(shotcount);
+				next_state = READ_GPS;
+			}
+			else {
+				next_state = READ_MAG;
+			}
 
-	// 		break;
+			
+			break;
 
-	// 	case ERROR:
-	// 		next_state = ERROR;
-	// 		break;
+		case READ_GPS:
 
-	// 	default:
-	// 		next_state = UN_AUTH;
-	// }
+			next_state = READ_IMU;
+			break;
 
-	// current_state = next_state;
+		case READ_IMU:
+
+			// next_state = READ_MAG;
+
+			break;
+
+		case ERROR:
+			next_state = ERROR;
+			break;
+
+		default:
+			next_state = UN_AUTH;
+	}
+
+	delay(1000); // remove
+
+	current_state = next_state;
 }
