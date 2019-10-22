@@ -106,18 +106,39 @@ bool NERF_RFID::authenticateUser() {
 
 bool NERF_RFID::authenticateMagazine() {
 	rfidRead();
-	if (uidRead != mag_id) {
+
+	Serial.print("uIDRead: ");
+	for (int i = 0; i < sizeof(uidRead); i++) {
+		Serial.print(uidRead[i]);
+	}
+	Serial.println();
+
+	Serial.print("MagRead: ");
+	for (int i = 0; i < sizeof(mag_id); i++) {
+		Serial.print(mag_id[i]);
+	}
+	Serial.println();
+	
+
+	
+
+	if (memcmp(uidRead, mag_id, sizeof(uidRead)) != 0) {
 
 		if (rfidAuthenticate(true)) { // true for magazine
 			Serial.println("Valid Magazine");
 			Serial.println();
 
 			memcpy(mag_id, uidRead, sizeof(uidRead));
-			return true;
 
-		} else {
-			Serial.println("Invalid Magazine");
-			return false;
+			// Serial.print("Updated MagRead: ");
+			// for (int i = 0; i < sizeof(mag_id); i++) {
+			// 	Serial.print(mag_id[i]);
+			// }
+			// Serial.println();
+			return true;
 		}
 	}
+
+	Serial.println("Invalid Magazine");
+	return false;
 }

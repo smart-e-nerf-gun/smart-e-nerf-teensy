@@ -2,12 +2,10 @@
 #include <Fonts/FreeMono9pt7b.h>	  // For all other information
 #include <Fonts/FreeMonoBold24pt7b.h> //For Ammo count
 
-void NERF_Display::setupDisplay()
-{
+void NERF_Display::setupDisplay() {
 	delay(100);
 	// SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
-	if (!begin(SSD1306_SWITCHCAPVCC, 0x3D))
-	{ // Address 0x3D for 128x64
+	if (!begin(SSD1306_SWITCHCAPVCC, 0x3D)) { // Address 0x3D for 128x64
 		Serial.println(F("SSD1306 allocation failed"));
 		for (;;)
 			; // Don't proceed, loop forever
@@ -88,8 +86,7 @@ const unsigned char auth[] = {
 	0x00, 0x00, 0x00, 0x3F, 0xFE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x07, 0xC0, 0x00, 0x00, 0x00,
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
-void NERF_Display::display_unauth()
-{
+void NERF_Display::display_unauth() {
 	clearDisplay();
 
 	drawBitmap(
@@ -100,8 +97,7 @@ void NERF_Display::display_unauth()
 	//delay(1000);
 }
 
-void NERF_Display::display_auth()
-{
+void NERF_Display::display_auth() {
 	clearDisplay();
 
 	drawBitmap(
@@ -112,7 +108,7 @@ void NERF_Display::display_auth()
 	// delay(1000);
 }
 
-void NERF_Display::setupStaticText(){
+void NERF_Display::setupStaticText() {
 	clearDisplay();
 	cp437(true);
 	//misfire setup text
@@ -151,27 +147,29 @@ void NERF_Display::setupStaticText(){
 	display();
 }
 
-void NERF_Display::invert_display()
-{
+void NERF_Display::invert_display() {
 	invertDisplay(true);
 	delay(250);
 	invertDisplay(false);
 	delay(250);
 }
 
-void NERF_Display::updateUN(char UN[6])
-{
+void NERF_Display::updateUN(char UN[6]) { //update username
+
 	char UN_cp437[6];
 	setTextSize(1);
 	setTextColor(BLACK); // set text color to black
 	setCursor(usercursor[0], usercursor[1]);
-	write(219);	write(219); write(219); write(219); write(219); write(219);
+	write(219);
+	write(219);
+	write(219);
+	write(219);
+	write(219);
+	write(219);
 
-	setCursor(usercursor[0], usercursor[1]);	
-	for (size_t i = 0; i <6; i++)
-	{
-		switch (UN[i])
-		{
+	setCursor(usercursor[0], usercursor[1]);
+	for (size_t i = 0; i < 6; i++) {
+		switch (UN[i]) {
 			case 'A':
 				UN_cp437[i] = 65;
 				break;
@@ -331,122 +329,108 @@ void NERF_Display::updateUN(char UN[6])
 			default:
 				UN_cp437[i] = 0;
 				break;
-			
 		}
-		
-		
 		setTextColor(WHITE);
 		write(UN_cp437[i]);
-		
-		// for (size_t i = 0; i != 6; i++)
-		// {
-		// 	setTextColor(WHITE);
-		// 	//write(UN_cp437[i]);	
-		// 	//Serial.print(UN_cp437[i]);	
-		// 	//Serial.print(sizeof(UN));
-		// }
-		//Serial.println(UN_cp437[0]);Serial.println(UN_cp437[1]);Serial.println(UN_cp437[2]);Serial.println(UN_cp437[3]);Serial.println(UN_cp437[4]);Serial.println(UN_cp437[5]);Serial.println(UN_cp437[6]);
 	}
-	
-	
+	display();
 }
 
-void NERF_Display::updateAC(int AC)
-{
+void NERF_Display::updateAC(int AC, bool reload) { //update ammo count
 	unsigned int AC_buffer = AC;
 	setTextSize(4);
 
 	setTextColor(BLACK); // set text color to black
 	setCursor(ammocursor[0], ammocursor[1]);
-	write(219);	write(219);
-	setCursor(ammocursor[0]+12, ammocursor[1]);
-	write(219);	write(219);
+	write(219);
+	write(219);
+	setCursor(ammocursor[0] + 12, ammocursor[1]);
+	write(219);
+	write(219);
 
 	setTextColor(WHITE);
-	if (AC_buffer<10){
-		setCursor(ammocursor[0]+12,ammocursor[1]);
+	if (reload) {
+		setCursor(ammocursor[0] + 12, ammocursor[1]);
+		write(63);
 	}
-	else
-	{
-		setCursor(ammocursor[0],ammocursor[1]);
+	else {	
+		if (AC_buffer < 10) {
+			setCursor(ammocursor[0] + 12, ammocursor[1]);
+		} else {
+			setCursor(ammocursor[0], ammocursor[1]);
+		}
+		print(AC_buffer);
 	}
-	print(AC_buffer);
+
 	display();
-	Serial.println("end updateAC()");
 }
 
-void NERF_Display::updateMF(int MF)
-{
+void NERF_Display::updateMF(int MF) { // Update misfire count
 	unsigned int MF_buffer = MF;
 	setTextSize(1);
 
 	setTextColor(BLACK); // set text color to black
 	setCursor(misfirecursor[0], misfirecursor[1]);
-	write(219);	write(219);	write(219);	write(219); //make sure previous value is cleared by overwriting it with black pixels
+	write(219);
+	write(219);
+	write(219);
+	write(219); //make sure previous value is cleared by overwriting it with black pixels
 
 	setTextColor(WHITE); // set text color to white
 	setCursor(misfirecursor[0], misfirecursor[1]);
-	if (MF_buffer<10){
+	if (MF_buffer < 10) {
 		write(48);
 		write(48);
+		print(MF_buffer);
+	} else if (MF_buffer < 100 && MF_buffer >= 10) {
+		write(48);
+		print(MF_buffer);
+	} else {
 		print(MF_buffer);
 	}
-	else if (MF_buffer<100 && MF_buffer>=10)
-	{
-		write(48);
-		print(MF_buffer);
-	}
-	else
-	{
-		print(MF_buffer);
-	}	
-	
 
 	display();
 }
 
-void NERF_Display::updateTS(int TS)
-{
+void NERF_Display::updateTS(int TS) { //update total shot count
 	unsigned int TS_buffer = TS;
 	setTextSize(1);
 
 	setTextColor(BLACK); // set text color to black
 	setCursor(shotcursor[0], shotcursor[1]);
-	write(219);	write(219);	write(219);	write(219); //make sure previous value is cleared by overwriting it with black pixels
+	write(219);
+	write(219);
+	write(219);
+	write(219); //make sure previous value is cleared by overwriting it with black pixels
 
 	setTextColor(WHITE); // set text color to white
-	if (TS_buffer<10){
-		setCursor(shotcursor[0]+12,shotcursor[1]);
-	}
-	else if (TS_buffer<100 && TS_buffer>=10)
-	{
-		setCursor(shotcursor[0]+6,shotcursor[1]);
-	}
-	else
-	{
+	if (TS_buffer < 10) {
+		setCursor(shotcursor[0] + 12, shotcursor[1]);
+	} else if (TS_buffer < 100 && TS_buffer >= 10) {
+		setCursor(shotcursor[0] + 6, shotcursor[1]);
+	} else {
 		setCursor(shotcursor[0], shotcursor[1]);
-	}	
+	}
 	print(TS_buffer);
 
 	display();
 }
 
-void NERF_Display::updateBS(int BS)
-{
+void NERF_Display::updateBS(int BS) { //update bullet speed
 	unsigned int BS_buffer = BS;
 	setTextSize(1);
 
 	setTextColor(BLACK); // set text color to black
 	setCursor(bulletcursor[0], bulletcursor[1]);
-	write(219);	write(219);	write(219); //make sure previous value is cleared by overwriting it with black pixels
+	write(219);
+	write(219);
+	write(219); //make sure previous value is cleared by overwriting it with black pixels
 
 	setTextColor(WHITE); // set text color to white
-	if (BS_buffer<10){
-		setCursor(bulletcursor[0]+6,bulletcursor[1]);
-	}
-	else
-	{
-		setCursor(bulletcursor[0],bulletcursor[1]);
+	if (BS_buffer < 10) {
+		setCursor(bulletcursor[0] + 6, bulletcursor[1]);
+	} else {
+		setCursor(bulletcursor[0], bulletcursor[1]);
 	}
 	print(BS_buffer);
 

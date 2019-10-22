@@ -66,7 +66,9 @@ void loop() {
 			delay(500);
 
 			nerf_display.setupStaticText();
-			// display the user anme here
+			Serial.println(name);
+			nerf_display.updateUN(name);
+			nerf_display.updateAC(0, true);
 
 			Serial.println("setupStaticText() done");
 
@@ -76,17 +78,17 @@ void loop() {
 
 		case READ_MAG:
 
+			nerf_display.updateAC(0, true);
+
 			if (nerf_rfid.authenticateMagazine()) {
-				Serial.println("updateAC()");
-				nerf_display.updateAC(shotcount);
+				
 				nerf_optics.setupOptics();
 				next_state = READ_GPS;
-			}
-			else {
+			} else {
+				nerf_display.invert_display();
 				next_state = READ_MAG;
 			}
 
-			
 			break;
 
 		case READ_GPS:
@@ -96,10 +98,14 @@ void loop() {
 
 		case READ_IMU:
 			if (shotcount == 0) {
+				Serial.println("Shot count is zero!");
 				next_state = READ_MAG;
-			}
+				Serial.print("Set next state to: ");
+				Serial.println(next_state);
+			} else {
 
-			next_state = READ_IMU;
+				next_state = READ_GPS;
+			}
 
 			break;
 
@@ -111,13 +117,15 @@ void loop() {
 			next_state = UN_AUTH;
 	}
 
+	if ((current_state != UN_AUTH) && (current_state != AUTH) && (current_state != READ_MAG)) {
+		nerf_display.updateAC(shotcount, false);
+		nerf_display.updateBS(duration);
+	}
+
 	current_state = next_state;
 
+	Serial.print("Shotcount: ");
+	Serial.println(shotcount);
 
-
-	if ((current_state != UN_AUTH) && (current_state != AUTH) && (current_state != READ_MAG)) {
-		nerf_display.updateAC(shotcount);
-	}
 	delay(1000); // remove
-
 }
