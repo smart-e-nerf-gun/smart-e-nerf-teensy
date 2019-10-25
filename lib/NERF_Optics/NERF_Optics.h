@@ -7,9 +7,9 @@
 #define OPTIC_SENSOR_1_PIN 23
 #define OPTIC_SENSOR_2_PIN 3
 
-#define DOUBLE
+#define SINGLE
 
-#ifdef SINGLE
+#ifdef DOUBLE
 
 class NERF_Optics {
 
@@ -28,7 +28,7 @@ class NERF_Optics {
 
 #endif
 
-#ifdef DOUBLE
+#ifdef SINGLE
 
 class NERF_Optics {
 

@@ -30,7 +30,7 @@ class NERF_Display : public Adafruit_SSD1306 {
         void display_unauth();
         void display_auth();
         void invert_display();
-        void setupStaticText();
+        void setupStaticText(bool gun);
 
         void updateMF(int x); //Misfire
         void updateUN(char un[6]); //User name

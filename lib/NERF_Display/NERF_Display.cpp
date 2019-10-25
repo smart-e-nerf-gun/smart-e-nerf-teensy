@@ -108,45 +108,65 @@ void NERF_Display::display_auth() {
 	// delay(1000);
 }
 
-void NERF_Display::setupStaticText() {
+void NERF_Display::setupStaticText(bool gun) {//true for all the elements to be displayed, false for limited display
 	clearDisplay(); //make sure the authorisation image is cleared
 	cp437(true);
 	//misfire setup text
-	setCursor(misfirecursor[0], misfirecursor[1]);
-	write(0);
-	write(0);
-	write(0);
-	write(0);
-	write(109);
-	write(105);
-	write(115);
-	write(115); //write "miss" in screen strting with blank space for number
-	display();
+	if (gun)
+	{	
+		setCursor(misfirecursor[0], misfirecursor[1]);
+		write(0);
+		write(0);
+		write(0);
+		write(0);
+		write(109);
+		write(105);
+		write(115);
+		write(115); //write "miss" in screen strting with blank space for number
+		display();
 
-	//shot count setup text
-	setCursor(shotcursor[0], shotcursor[1]);
-	write(0);
-	write(0);
-	write(0);
-	write(0);
-	write(115);
-	write(104);
-	write(111);
-	write(116);
-	write(115); //write "shots" in screen strting with blank space for number
-	display();
+		//shot count setup text
+		setCursor(shotcursor[0], shotcursor[1]);
+		write(0);
+		write(0);
+		write(0);
+		write(0);
+		write(115);
+		write(104);
+		write(111);
+		write(116);
+		write(115); //write "shots" in screen strting with blank space for number
+		display();
 
-	//bullet speed setup text
-	setCursor(bulletcursor[0], bulletcursor[1]);
-	write(0);
-	write(0);
-	write(46);
-	write(0);
-	write(0);
-	write(109);
-	write(47);
-	write(115); //write "m/s" in screen strting with blank space for number
-	display();
+		//bullet speed setup text
+		setCursor(bulletcursor[0], bulletcursor[1]);
+		write(0);
+		write(0);
+		write(46);
+		write(0);
+		write(0);
+		write(109);
+		write(47);
+		write(115); //write "m/s" in screen strting with blank space for number
+		display();
+	}
+	else
+	{
+		//shot count setup text
+		setCursor(shotcursor[0], shotcursor[1]+40);
+		write(0);
+		write(0);
+		write(0);
+		write(0);
+		write(115);
+		write(104);
+		write(111);
+		write(116);
+		write(115); //write "shots" in screen strting with blank space for number
+		display();
+	}
+	
+	
 }
 
 void NERF_Display::invert_display() {
@@ -339,6 +359,7 @@ void NERF_Display::updateUN(char UN[6]) { //update username
 }
 
 void NERF_Display::updateAC(int AC, bool reload) { //update ammo count
+	Serial.print("Start of AC update");
 	unsigned int AC_buffer = AC;
 	setTextSize(4);
 
@@ -365,6 +386,7 @@ void NERF_Display::updateAC(int AC, bool reload) { //update ammo count
 	}
 
 	display();
+	Serial.print("End of AC display update");
 }
 
 void NERF_Display::updateMF(int MF) { // Update misfire count
@@ -392,6 +414,7 @@ void NERF_Display::updateMF(int MF) { // Update misfire count
 	}
 
 	display();
+
 }
 
 void NERF_Display::updateTS(int TS) { //update total shot count

@@ -69,7 +69,7 @@ void loop() {
 			nerf_display.display_auth();
 			delay(500);
 
-			nerf_display.setupStaticText();
+			nerf_display.setupStaticText(true);
 			Serial.println(name);
 			nerf_display.updateUN(name);
 			nerf_display.updateAC(0, true);

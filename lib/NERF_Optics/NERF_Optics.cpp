@@ -1,8 +1,8 @@
 #include "NERF_Optics.h"
 
-#define DOUBLE
+#define SINGLE
 
-#ifdef SINGLE
+#ifdef DOUBLE
 
 IntervalTimer op1Timer;
 /**
@@ -57,24 +57,21 @@ void NERF_Optics::timerInt() {
 void NERF_Optics::opt2Iqr() {
 
 	if (read_first_sensor) {
-		
+
 		op1Timer.end();
-        --shotcount;
+		--shotcount;
 		++shots_fired;
 
 		if (opt1_time) {
-			
-			
 
-            misfire++; //Increment number of misfire/s
-            Serial.print(misfire);
-            Serial.print(" Misfire/s\n");
-            //char buffer[4] = {'*'};
-            //nerf_xbee.sendPayload((uint8_t *)buffer, sizeof(buffer));
-		}
-        else {
+			misfire++; //Increment number of misfire/s
+			Serial.print(misfire);
+			Serial.print(" Misfire/s\n");
+			//char buffer[4] = {'*'};
+			//nerf_xbee.sendPayload((uint8_t *)buffer, sizeof(buffer));
+		} else {
 			duration = micros() - time1;
-			char buffer [sizeof(long)*8+1 + 2] = {'*'};
+			char buffer[sizeof(long) * 8 + 1 + 2] = {'*'};
 			ltoa(duration, buffer + 2, DEC);
 			buffer[0] = 'D';
 			buffer[1] = 'B';
@@ -83,9 +80,9 @@ void NERF_Optics::opt2Iqr() {
 			nerf_xbee.sendPayload((uint8_t *)buffer, sizeof(buffer));
 		}
 		opt1_time = false;
-        read_first_sensor = false;
+		read_first_sensor = false;
 	}
-	
+
 	return;
 }
 
@@ -105,11 +102,9 @@ void NERF_Optics::setupOptics() {
 	return;
 }
 
-
 #endif
 
-#ifdef DOUBLE
-
+#ifdef SINGLE
 
 /**
  * When the bulet passes the first optical sensor, this function will be called.
@@ -120,20 +115,19 @@ void NERF_Optics::setupOptics() {
  */
 
 void NERF_Optics::opt1Iqr() {
-	
-	 shotcount++;
 
-			char buffer[3];
-			buffer[0] = 'D';
-			buffer[1] = 'B';
-			buffer[2] = '0';
-			nerf_xbee.sendPayload((uint8_t *)buffer, sizeof(buffer));
+	// Serial.println("Fire!");
+	++shotcount;
 
+	char buffer[3];
+	buffer[0] = 'D';
+	buffer[1] = 'B';
+	buffer[2] = '0';
+	nerf_xbee.sendPayload((uint8_t *)buffer, sizeof(buffer));
+	Serial.println(buffer);
 
 	return;
 }
-
-
 
 void NERF_Optics::setupOptics() {
 

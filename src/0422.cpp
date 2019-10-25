@@ -67,7 +67,7 @@ void loop() {
 			nerf_display.display_auth();
 			delay(500);
 
-			nerf_display.setupStaticText();
+			nerf_display.setupStaticText(false);
 			Serial.println(name);
 			nerf_display.updateUN(name);
 			nerf_display.updateAC(0, true);
@@ -78,16 +78,14 @@ void loop() {
 
 		case READ_MAG:
 
-			next_state = READ_GPS;
-
 			// nerf_display.updateAC(0, true);
 			nerf_display.updateAC(0, false);
 
 			// if (nerf_rfid.authenticateMagazine()) {
 
 			// 	nerf_imu.setupImu();
-			// 	nerf_optics.setupOptics();
-
+			nerf_optics.setupOptics();
+			next_state = READ_GPS;
 			// 	next_state = READ_GPS;
 			// } else {
 			// 	nerf_display.invert_display();
@@ -102,23 +100,25 @@ void loop() {
 			break;
 
 		case READ_IMU:
-			if (shotcount == 0) {
-				next_state = READ_MAG;
 
-			} else {
+			next_state = READ_GPS;
+			// if (shotcount == 0) {
+			// 	next_state = READ_MAG;
 
-				nerf_imu.updateImuData();
-				if (nerf_imu.isAimed()) {
-					imu_msg[2] = '1';
-				} else {
-					imu_msg[2] = '0';
-				}
+			// } else {
 
-				nerf_xbee.sendPayload((uint8_t *)imu_msg, sizeof(imu_msg));
-				next_state = READ_GPS;
+			// 	nerf_imu.updateImuData();
+			// 	if (nerf_imu.isAimed()) {
+			// 		imu_msg[2] = '1';
+			// 	} else {
+			// 		imu_msg[2] = '0';
+			// 	}
 
-				delay(100);
-			}
+			// 	nerf_xbee.sendPayload((uint8_t *)imu_msg, sizeof(imu_msg));
+			// 	next_state = READ_GPS;
+
+			// 	delay(100);
+			// }
 
 			break;
 
@@ -128,10 +128,12 @@ void loop() {
 
 		default:
 			next_state = UN_AUTH;
+			break;
 	}
 
-	if ((current_state != UN_AUTH) && (current_state != AUTH) && (current_state != READ_MAG)) {
+	// if ((current_state != UN_AUTH) && (current_state != AUTH) && (current_state != READ_MAG)) {
 		nerf_display.updateAC(shotcount, false);
+		Serial.print(shotcount);
 		// nerf_display.updateTS(shots_fired);
 		// nerf_display.updateMF(misfire);
 		// double speed = ( (duration / 1000000));
@@ -140,11 +142,9 @@ void loop() {
 		// 	Serial.println(speed);
 		// 	nerf_display.updateBS(speed);
 		// }
-		
+
 		//nerf_display.updateBS(speed); // Calc and display speed
-		
-		
-	}
+	// }
 
 	current_state = next_state;
 
